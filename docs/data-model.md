@@ -76,3 +76,11 @@ All persisted domain entities use Guid identifiers and UTC `DateTimeOffset` time
 ## Identity
 
 ASP.NET Core Identity stores authentication users, roles, claims, logins, tokens, and related tables through `ApplicationUser` and `AccordlyDbContext`. The domain `User` record is kept separately for agreement-facing profile data until the identity/domain relationship is completed.
+
+## Domain Events
+
+The domain defines immutable event records without dispatch logic yet:
+
+- `AgreementStatusChangedEvent`: agreement identifier, previous and new status, and occurrence timestamp
+- `AgreementVersionCreatedEvent`: agreement, version, and author identifiers, version number, and creation timestamp
+- `SignatorySignedEvent`: agreement and signatory identifiers, optional signed version identifier, and signing timestamp

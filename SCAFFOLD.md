@@ -61,7 +61,7 @@ Check off each item as it is completed and committed.
   - `Attachment`: `AgreementId`, `VersionId`, `FileName`, `ContentType`, `StorageKey`, `FileSizeBytes` (long), `Sha256Hash`, `UploadedById`, `UploadedAt`
   - `AuditEvent`: `AgreementId`, `ActorId?`, `EventType`, `Payload?`, `OccurredAt`, `IpAddress?`
 
-- [ ] **2.4 — Domain events**
+- [x] **2.4 — Domain events**
   Create `Events/AgreementStatusChangedEvent.cs`, `Events/AgreementVersionCreatedEvent.cs`,
   `Events/SignatorySignedEvent.cs`.
   Each is a simple `record` with relevant properties. No dispatch logic yet.

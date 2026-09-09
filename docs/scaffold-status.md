@@ -6,6 +6,7 @@
 
 - .NET 10 solution in `Accordly.slnx`
 - Domain entities, enums, and base entity
+- Domain event records for status changes, version creation, and signatures
 - Contracts records for agreements, versions, signatories, attachments, and auth
 - Application repository/service interfaces
 - Create-agreement command, handler, validator, and get-agreement query
@@ -17,7 +18,6 @@
 
 ## Still Outstanding
 
-- Domain event records
 - MediatR validation pipeline behavior
 - Initial EF Core migration and database verification
 - Complete Carter module separation for versions, signatories, attachments, export, auth, and audit
