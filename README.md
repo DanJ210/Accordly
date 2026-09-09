@@ -552,7 +552,7 @@ accordly/
 │   ├── Accordly.Core/           # Domain models, interfaces, business logic
 │   ├── Accordly.Infrastructure/ # EF Core, repositories, storage, crypto
 │   └── Accordly.Tests/          # xUnit test projects
-├── frontend/                      # Vue 3 SPA
+├── frontend/                    # Vue 3 SPA
 │   ├── src/
 │   │   ├── components/
 │   │   ├── pages/
