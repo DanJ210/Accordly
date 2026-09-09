@@ -21,8 +21,9 @@
 8. [MVP Roadmap](#mvp-roadmap)
 9. [Getting Started](#getting-started)
 10. [Environment Variables](#environment-variables)
-11. [Contributing](#contributing)
-12. [License](#license)
+11. [Documentation](#documentation)
+12. [Contributing](#contributing)
+13. [License](#license)
 
 ---
 
@@ -417,6 +418,18 @@ pnpm dev
 ```
 
 The API will be available at `https://localhost:5001` and the Vue dev server at `http://localhost:5173`.
+
+---
+
+## Documentation
+
+Project documentation is organized under [`docs/`](docs/README.md):
+
+- [Architecture and project guide](docs/architecture.md)
+- [API reference](docs/api.md)
+- [Data model](docs/data-model.md)
+- [Local development](docs/development.md)
+- [Scaffold status and roadmap](docs/scaffold-status.md)
 
 ### Running Tests
 

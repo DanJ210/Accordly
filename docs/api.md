@@ -1,0 +1,78 @@
+# API Reference
+
+All API routes are prefixed with `/api/v1`.
+
+Unless marked public, routes require a JWT bearer token. The API uses Carter modules and returns JSON contracts from `Accordly.Contracts`.
+
+## Agreements
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/agreements` | Authenticated | List agreements for the current user |
+| POST | `/agreements` | Authenticated | Create an agreement; returns `201 Created` |
+| GET | `/agreements/{id}` | Authenticated | Read agreement details and current version |
+| PATCH | `/agreements/{id}` | Authenticated | Update title, status, or expiry |
+| DELETE | `/agreements/{id}` | Authenticated | Remove an agreement for its owner |
+
+## Versions
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/agreements/{id}/versions` | Authenticated | List versions |
+| POST | `/agreements/{id}/versions` | Authenticated | Create an immutable version |
+| GET | `/agreements/{id}/versions/{versionId}` | Authenticated | Read one version |
+| GET | `/agreements/{id}/versions/diff?from=&to=` | Authenticated | Compare two versions |
+
+## Signatories
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/agreements/{id}/signatories` | Authenticated | List signatories |
+| POST | `/agreements/{id}/signatories` | Authenticated | Invite a signatory |
+| DELETE | `/agreements/{id}/signatories/{sigId}` | Authenticated | Remove an unsigned signatory |
+| POST | `/agreements/{id}/signatories/{sigId}/sign` | Authenticated | Submit a signature |
+| GET | `/sign/{token}` | Public | Resolve a guest invite |
+| POST | `/sign/{token}` | Public | Submit a guest signature |
+
+## Attachments
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/agreements/{id}/attachments` | Authenticated | List attachments |
+| POST | `/agreements/{id}/attachments` | Authenticated | Upload multipart content |
+| GET | `/agreements/{id}/attachments/{attachId}` | Authenticated | Download an attachment |
+| DELETE | `/agreements/{id}/attachments/{attachId}` | Authenticated | Delete an attachment |
+
+## Export and Audit
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/agreements/{id}/export/pdf` | Authenticated | Generate a court-ready PDF bundle |
+| GET | `/agreements/{id}/export/json` | Authenticated | Export the agreement record as JSON |
+| GET | `/agreements/{id}/audit` | Authenticated | Read the agreement audit log |
+
+## Authentication
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| POST | `/auth/register` | Public | Register an account |
+| POST | `/auth/login` | Public | Issue an access and refresh token |
+| POST | `/auth/refresh` | Public | Rotate a refresh token |
+| POST | `/auth/logout` | Public or authenticated | Revoke a refresh token |
+
+## SignalR
+
+The hub is available at `/hubs/agreements`.
+
+Server-to-client events:
+
+- `VersionCreated`
+- `SignatoryUpdated`
+- `AgreementStatusChanged`
+- `AttachmentUploaded`
+
+## Error Handling
+
+- Validation errors return HTTP 400 with field-level errors.
+- Missing resources return HTTP 404.
+- Unexpected errors return HTTP 500. Production responses must not expose stack traces.
