@@ -1,0 +1,2 @@
+<template><div class="panel"><table><thead><tr><th>Title</th><th>Status</th><th>Updated</th></tr></thead><tbody><tr v-for="agreement in agreements" :key="agreement.id"><td><RouterLink :to="`/agreements/${agreement.id}`">{{ agreement.title }}</RouterLink></td><td><span class="status">{{ agreement.status }}</span></td><td>{{ new Date(agreement.updatedAt).toLocaleDateString() }}</td></tr></tbody></table></div></template>
+<script setup lang="ts">import type { Agreement } from '@/stores/agreements'; defineProps<{ agreements: Agreement[] }>()</script>

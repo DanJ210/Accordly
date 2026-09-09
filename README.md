@@ -1,633 +1,483 @@
-<div align="center">
+# Accordly
 
-# ⚖️ Accordly
-
-**A peer-to-peer agreement platform built for trust, transparency, and legal durability.**
+> **Peer-to-peer agreements — drafted, signed, versioned, and court-ready.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Backend: .NET 10](https://img.shields.io/badge/Backend-.NET%2010-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
-[![Frontend: Vue 3](https://img.shields.io/badge/Frontend-Vue%203-42b883?logo=vue.js)](https://vuejs.org/)
-[![Status: MVP In Progress](https://img.shields.io/badge/Status-MVP%20In%20Progress-orange)]()
-
-</div>
+[![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
+[![Vue](https://img.shields.io/badge/Vue-3.x-42b883.svg)](https://vuejs.org/)
+[![Status](https://img.shields.io/badge/status-MVP%20Development-orange.svg)]()
 
 ---
 
 ## Table of Contents
 
-1. [Purpose](#1-purpose)
-2. [Problem Statement](#2-problem-statement)
-3. [Solution Overview](#3-solution-overview)
-4. [Core Features](#4-core-features)
-5. [Architecture](#5-architecture)
-6. [Tech Stack](#6-tech-stack)
-7. [Data Model Overview](#7-data-model-overview)
-8. [API Surface](#8-api-surface)
-9. [MVP Scope](#9-mvp-scope)
-10. [Roadmap & Future Enhancements](#10-roadmap--future-enhancements)
-11. [Getting Started](#11-getting-started)
-12. [Contributing](#12-contributing)
-13. [License](#13-license)
+1. [Overview](#overview)
+2. [Problem Statement](#problem-statement)
+3. [Solution](#solution)
+4. [Core Features](#core-features)
+5. [Architecture](#architecture)
+6. [Data Model](#data-model)
+7. [API Surface](#api-surface)
+8. [MVP Roadmap](#mvp-roadmap)
+9. [Getting Started](#getting-started)
+10. [Environment Variables](#environment-variables)
+11. [Contributing](#contributing)
+12. [License](#license)
 
 ---
 
-## 1. Purpose
+## Overview
 
-Accordly is an open-source, peer-to-peer agreement platform that gives individuals and
-organizations a structured, auditable way to create, sign, version, and store agreements —
-without relying on expensive legal intermediaries or opaque SaaS services.
+**Accordly** is an open-source, self-hostable platform that lets any two (or more) parties draft, negotiate, sign, and archive binding agreements — without lawyers, notaries, or expensive SaaS subscriptions standing in the way.
 
-Every agreement on Accordly is a living document: it can be negotiated, revised,
-co-signed, and ultimately locked into a tamper-evident record that is suitable for dispute
-resolution, court submission, or archival reference.
+Every agreement on Accordly is version-controlled, cryptographically signed, attachment-aware, and exportable to a court-ready PDF bundle. Whether you're settling a freelance scope, formalizing a partnership, or documenting a shared living arrangement, Accordly gives your word the weight it deserves.
 
 ---
 
-## 2. Problem Statement
+## Problem Statement
 
-Informal agreements between parties — freelancers and clients, landlords and tenants,
-business partners, family members — are routinely made over email, chat, or verbal
-conversation. These channels share a common set of critical failures:
+Informal agreements fail — not because people act in bad faith, but because:
 
-- **No canonical version** — parties often work from different copies, leading to disputes
-  about what was actually agreed.
-- **No auditable history** — edits and negotiations happen silently, with no record of who
-  changed what and when.
-- **No enforceable signatures** — a reply-all email is not a signature; a screenshot of a
-  chat is not a contract.
-- **No structured export** — presenting an agreement in court or arbitration requires
-  expensive reformatting and counsel.
-- **Vendor lock-in** — proprietary e-signature platforms hold your agreements hostage behind
-  subscription paywalls.
+- **No canonical record exists.** Conversations happen across texts, emails, and memory.
+- **Versions get lost.** "Which draft did we agree to?" is a question that kills deals.
+- **Signatures are theater.** A DocuSign link costs money, requires accounts on both sides, and still produces a PDF you have to store yourself.
+- **Disputes are expensive.** When something goes wrong, reconstructing intent from scattered messages costs time and money neither party planned for.
 
-Accordly is purpose-built to eliminate every one of these failure modes.
+Small businesses, freelancers, roommates, and family members need a lightweight, trustworthy alternative — one that doesn't require a law firm or a Fortune 500 budget.
 
 ---
 
-## 3. Solution Overview
+## Solution
 
-Accordly treats every agreement as a **versioned, cryptographically signed ledger entry**.
-Parties collaborate on agreement text in real time, negotiate through structured amendment
-proposals, and finalize the agreement with legally meaningful digital signatures. Every state
-transition — draft, amendment, counter-proposal, signature, revocation — is recorded as an
-immutable event in the agreement's history.
+Accordly solves the agreement lifecycle end-to-end:
 
-The result is a full audit trail that can be exported as a self-contained, court-ready PDF
-bundle: agreement text, version history, signature manifest, and supporting attachments all
-in one document.
-
-```
-Party A drafts agreement
-        │
-        ▼
-Party B reviews & proposes amendments ──► Party A accepts / counter-proposes
-        │                                        │
-        └────────────────────────────────────────┘
-                        │
-                        ▼
-              Both parties co-sign
-                        │
-                        ▼
-            Agreement is locked & sealed
-                        │
-                        ▼
-        Exportable as court-ready PDF bundle
-```
-
----
-
-## 4. Core Features
-
-### ✍️ Agreement Authoring
-- Rich-text agreement editor with structured clause support
-- Party invitations via email or shareable link
-- Real-time collaborative editing with conflict resolution
-- Named agreement templates for common use cases
-
-### 🔄 Versioning & Negotiation
-- Every save creates an immutable version snapshot
-- Proposed amendments are tracked as discrete change sets
-- Each party can accept, reject, or counter-propose amendments
-- Full diff view between any two versions
-
-### 🔏 Digital Signatures
-- Cryptographic signature capture (RSA / ECDSA key pairs)
-- Identity verification via email confirmation + optional ID assertion
-- Signature timestamps anchored to a trusted time source
-- Multi-party signature sequencing (parallel or ordered)
-- Signature revocation with recorded reason and timestamp
-
-### 📎 Attachments
-- Upload supporting documents (PDFs, images, spreadsheets) as exhibits
-- Attachments are hashed and bound to the agreement version at signing time
-- Reference exhibits inline in agreement clauses
-
-### 📄 Court-Ready Export
-- One-click export to a sealed PDF bundle including:
-  - Final agreement text
-  - Complete version history & diff log
-  - Signature manifest with timestamps and key fingerprints
-  - Attachment exhibit index with hash verification
-- Export metadata is itself signed to certify bundle authenticity
-
-### 🔐 Security & Privacy
-- End-to-end encryption for agreement content in transit
-- Encryption at rest for stored agreements and attachments
-- Granular access control: drafter, reviewer, signatory, witness, observer
-- Optional private mode: zero server-side plaintext storage
-
-### 📊 Dashboard & Notifications
-- Unified inbox for pending actions (review, sign, counter-propose)
-- Agreement lifecycle status at a glance
-- Email and in-app notifications for all state transitions
-
----
-
-## 5. Architecture
-
-Accordly follows a clean **API-first, layered architecture** with a decoupled frontend
-and backend.
-
-```
-┌─────────────────────────────────────────────────────┐
-│                   Vue 3 Frontend                     │
-│          (SPA · Pinia · Vue Router · Quasar)         │
-└──────────────────────┬──────────────────────────────┘
-                       │ HTTPS / REST + WebSocket
-┌──────────────────────▼──────────────────────────────┐
-│              .NET 10 Web API (ASP.NET Core)          │
-│  ┌───────────┐  ┌──────────────┐  ┌──────────────┐  │
-│  │ Agreement │  │  Signature   │  │   Export     │  │
-│  │  Service  │  │   Service    │  │   Service    │  │
-│  └───────────┘  └──────────────┘  └──────────────┘  │
-│  ┌───────────┐  ┌──────────────┐  ┌──────────────┐  │
-│  │   User /  │  │  Versioning  │  │  Attachment  │  │
-│  │  Identity │  │   Engine     │  │   Service    │  │
-│  └───────────┘  └──────────────┘  └──────────────┘  │
-└──────────────────────┬──────────────────────────────┘
-                       │
-       ┌───────────────┼──────────────────┐
-       ▼               ▼                  ▼
- PostgreSQL       Redis Cache        Object Store
- (primary DB)   (sessions/events)  (attachments/exports)
-```
-
-### Key Architectural Decisions
-
-| Decision | Choice | Rationale |
-|---|---|---|
-| Agreement storage | PostgreSQL (JSONB columns for clause trees) | Relational integrity + flexible schema for clause structures |
-| Version history | Event-sourced append-only log | Immutability, audit trail, time-travel queries |
-| Real-time collaboration | SignalR WebSocket hub | Native .NET integration, scales to Azure SignalR Service |
-| Signature crypto | .NET `System.Security.Cryptography` + BouncyCastle | FIPS-compliant, no external key custody |
-| PDF export | QuestPDF | Code-first PDF generation, fully testable |
-| Attachment storage | S3-compatible object store (MinIO for local dev) | Decoupled, swappable, CDN-ready |
-| Auth | ASP.NET Core Identity + JWT + optional OAuth2 | Stateless API tokens, extensible to SSO |
-
----
-
-## 6. Tech Stack
-
-### Backend — `.NET 10` (ASP.NET Core Web API)
-
-| Layer | Technology |
+| Stage | What Accordly Does |
 |---|---|
-| Framework | ASP.NET Core 10 Minimal APIs + Controllers |
+| **Draft** | Rich-text editor with clause templates; all edits versioned automatically |
+| **Negotiate** | Inline comments and counter-proposals; full diff between any two versions |
+| **Sign** | Cryptographic signature with audit trail; no account required for counterparties |
+| **Store** | Immutable, versioned record with attachment support |
+| **Export** | One-click court-ready PDF bundle including agreement body, version history, and signature manifest |
+
+---
+
+## Core Features
+
+### Agreement Lifecycle
+- **Rich-text drafting** with Markdown support and clause library
+- **Automatic versioning** — every save creates a numbered, immutable snapshot
+- **Side-by-side diff viewer** between any two versions
+- **Status workflow:** `Draft → Pending Signatures → Active → Expired / Terminated`
+
+### Signatures
+- **Cryptographic signing** using asymmetric key pairs (Ed25519)
+- **Guest signing** — counterparties sign via a secure tokenized link; no Accordly account required
+- **Multi-party support** — unlimited signatories per agreement
+- **Signature manifest** — timestamped, IP-logged, and tamper-evident
+
+### Attachments
+- File attachments scoped to a specific agreement version
+- SHA-256 integrity hash stored at upload time
+- Attachment referenced in the PDF export by name, hash, and upload timestamp
+
+### Court-Ready Export
+- Single PDF bundle containing:
+  - Agreement body (final agreed version)
+  - Full version history with timestamps and author attribution
+  - Inline diff highlights for material changes
+  - Signature manifest (signer name, email, timestamp, IP, key fingerprint)
+  - Attachment manifest (name, hash, timestamp)
+- PDF is digitally signed by the Accordly server key for third-party verifiability
+
+### Access & Collaboration
+- Invite counterparties by email or shareable link
+- Role-based access: `Owner`, `Collaborator`, `Signer`, `Viewer`
+- Org-level agreement management for business accounts
+- Audit log on every agreement — every view, edit, comment, and signature recorded
+
+---
+
+## Architecture
+
+Accordly follows a clean separation between a stateless REST/WebSocket API backend and a reactive single-page frontend.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                          Browser / PWA                          │
+│                   Vue 3  ·  Pinia  ·  Tailwind                  │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │ HTTPS / WSS
+┌──────────────────────────────▼──────────────────────────────────┐
+│                        Accordly API                             │
+│              .NET 10  ·  ASP.NET Core Minimal APIs              │
+│         SignalR (real-time)  ·  Carter (route modules)          │
+└───────────┬──────────────────┬──────────────────────────────────┘
+            │                  │
+   ┌────────▼────────┐  ┌──────▼──────────┐
+   │   PostgreSQL    │  │   Object Store  │
+   │  (EF Core 10)   │  │  (S3-compatible)│
+   └─────────────────┘  └─────────────────┘
+```
+
+### Backend — `.NET 10`
+
+| Concern | Technology |
+|---|---|
+| Runtime | .NET 10 / ASP.NET Core Minimal APIs |
+| Route modules | Carter |
 | ORM | Entity Framework Core 10 |
 | Database | PostgreSQL 16 |
-| Caching | Redis (StackExchange.Redis) |
 | Real-time | SignalR |
-| Auth | ASP.NET Core Identity · JWT Bearer · OpenIddict |
-| Crypto | System.Security.Cryptography · BouncyCastle.Cryptography |
-| PDF Generation | QuestPDF |
-| Object Storage | AWSSDK.S3 (MinIO-compatible) |
-| Testing | xUnit · FluentAssertions · Testcontainers |
-| Observability | OpenTelemetry · Serilog · Seq |
-| API Docs | Scalar (OpenAPI 3.1) |
+| Auth | ASP.NET Core Identity + JWT Bearer |
+| File storage | S3-compatible object store (MinIO for local dev) |
+| PDF generation | QuestPDF |
+| Cryptography | .NET `System.Security.Cryptography` (Ed25519) |
+| Background jobs | Hangfire |
+| Testing | xUnit + Testcontainers |
+
+**Project layout:**
+
+```
+src/
+├── Accordly.Api/            # Entry point, middleware, DI composition
+├── Accordly.Domain/         # Entities, value objects, domain events
+├── Accordly.Application/    # Use cases, commands, queries (CQRS)
+├── Accordly.Infrastructure/ # EF Core, storage, email, crypto
+└── Accordly.Contracts/      # Shared DTOs and API contracts
+tests/
+├── Accordly.Unit/
+├── Accordly.Integration/
+└── Accordly.E2E/
+```
 
 ### Frontend — `Vue 3`
 
-| Layer | Technology |
+| Concern | Technology |
 |---|---|
 | Framework | Vue 3 (Composition API) |
-| Build | Vite 6 |
 | State | Pinia |
-| Router | Vue Router 4 |
-| UI Components | Quasar Framework 2 |
-| Rich Text Editor | TipTap 2 (ProseMirror-based) |
-| Diff Viewer | vue-diff |
-| HTTP Client | Axios |
-| WebSocket | @microsoft/signalr |
-| Testing | Vitest · Vue Test Utils · Playwright |
+| Routing | Vue Router 4 |
+| Styling | Tailwind CSS v4 |
+| Rich text | Tiptap v2 |
+| Diff viewer | diff2html |
+| PDF preview | pdfjs-dist |
+| HTTP | Axios + composable wrappers |
+| Real-time | SignalR JS client |
+| Testing | Vitest + Vue Testing Library + Playwright |
 
-### Infrastructure (Self-hosted & Cloud-ready)
+**Project layout:**
 
-| Concern | Tool |
-|---|---|
-| Containerization | Docker + Docker Compose |
-| Orchestration | Kubernetes (Helm charts provided) |
-| CI/CD | GitHub Actions |
-| Secrets | HashiCorp Vault / Azure Key Vault |
-| Object Store | MinIO (local) · AWS S3 / Azure Blob (cloud) |
-
----
-
-## 7. Data Model Overview
-
-### `users`
 ```
-id            UUID PK
-email         VARCHAR UNIQUE NOT NULL
-display_name  VARCHAR
-public_key    TEXT               -- RSA/ECDSA public key for signature verification
-created_at    TIMESTAMPTZ
-last_login_at TIMESTAMPTZ
-```
-
-### `agreements`
-```
-id              UUID PK
-title           VARCHAR NOT NULL
-status          ENUM (draft | negotiating | pending_signatures | executed | revoked | expired)
-created_by      UUID FK → users.id
-created_at      TIMESTAMPTZ
-executed_at     TIMESTAMPTZ
-expires_at      TIMESTAMPTZ
-is_private      BOOLEAN DEFAULT FALSE
-```
-
-### `agreement_versions`
-```
-id              UUID PK
-agreement_id    UUID FK → agreements.id
-version_number  INTEGER NOT NULL
-content         JSONB NOT NULL         -- Structured clause tree
-change_summary  TEXT
-created_by      UUID FK → users.id
-created_at      TIMESTAMPTZ
-parent_version  UUID FK → agreement_versions.id
-```
-
-### `parties`
-```
-id              UUID PK
-agreement_id    UUID FK → agreements.id
-user_id         UUID FK → users.id
-role            ENUM (drafter | signatory | witness | observer)
-invited_at      TIMESTAMPTZ
-accepted_at     TIMESTAMPTZ
-```
-
-### `amendments`
-```
-id              UUID PK
-agreement_id    UUID FK → agreements.id
-proposed_by     UUID FK → users.id
-base_version    UUID FK → agreement_versions.id
-diff_patch      JSONB NOT NULL
-status          ENUM (pending | accepted | rejected | superseded)
-proposed_at     TIMESTAMPTZ
-resolved_at     TIMESTAMPTZ
-```
-
-### `signatures`
-```
-id              UUID PK
-agreement_id    UUID FK → agreements.id
-version_id      UUID FK → agreement_versions.id
-party_id        UUID FK → parties.id
-signature_data  TEXT NOT NULL          -- Base64-encoded cryptographic signature
-algorithm       VARCHAR                -- e.g. ECDSA-P256-SHA256
-signed_at       TIMESTAMPTZ
-ip_address      INET
-revoked_at      TIMESTAMPTZ
-revoke_reason   TEXT
-```
-
-### `attachments`
-```
-id              UUID PK
-agreement_id    UUID FK → agreements.id
-version_id      UUID FK → agreement_versions.id
-file_name       VARCHAR NOT NULL
-content_type    VARCHAR
-storage_key     VARCHAR NOT NULL       -- Object store path
-sha256_hash     CHAR(64) NOT NULL      -- Binding hash at upload time
-uploaded_by     UUID FK → users.id
-uploaded_at     TIMESTAMPTZ
-```
-
-### `audit_events`
-```
-id              UUID PK
-agreement_id    UUID FK → agreements.id
-actor_id        UUID FK → users.id
-event_type      VARCHAR NOT NULL       -- e.g. version.created, signature.added
-payload         JSONB
-occurred_at     TIMESTAMPTZ
-ip_address      INET
+frontend/
+├── src/
+│   ├── assets/
+│   ├── components/      # Shared UI components
+│   ├── composables/     # Reusable logic hooks
+│   ├── features/        # Feature-scoped modules
+│   │   ├── agreements/
+│   │   ├── signatures/
+│   │   ├── attachments/
+│   │   └── export/
+│   ├── layouts/
+│   ├── pages/
+│   ├── router/
+│   ├── stores/          # Pinia stores
+│   └── main.ts
+├── tests/
+└── public/
 ```
 
 ---
 
-## 8. API Surface
+## Data Model
 
-All endpoints are prefixed with `/api/v1`. Authentication requires a JWT Bearer token
-unless marked `[public]`.
+### Core Entities
 
-### Authentication
-
-| Method | Endpoint | Description |
+#### `User`
+| Column | Type | Notes |
 |---|---|---|
-| POST | `/auth/register` | Register a new user account `[public]` |
-| POST | `/auth/login` | Issue JWT access + refresh token pair `[public]` |
-| POST | `/auth/refresh` | Rotate refresh token |
-| POST | `/auth/logout` | Revoke refresh token |
-| GET | `/auth/me` | Get authenticated user profile |
-| PUT | `/auth/me/keys` | Upload or rotate public key |
+| `Id` | `uuid` | PK |
+| `Email` | `varchar(320)` | Unique, verified |
+| `DisplayName` | `varchar(100)` | |
+| `PublicKey` | `text` | Ed25519 public key (Base64) |
+| `CreatedAt` | `timestamptz` | |
+| `OrganizationId` | `uuid?` | FK → Organization |
+
+#### `Agreement`
+| Column | Type | Notes |
+|---|---|---|
+| `Id` | `uuid` | PK |
+| `Title` | `varchar(250)` | |
+| `Status` | `enum` | Draft, PendingSignatures, Active, Expired, Terminated |
+| `OwnerId` | `uuid` | FK → User |
+| `OrganizationId` | `uuid?` | FK → Organization |
+| `CurrentVersionId` | `uuid` | FK → AgreementVersion |
+| `CreatedAt` | `timestamptz` | |
+| `UpdatedAt` | `timestamptz` | |
+| `ExpiresAt` | `timestamptz?` | |
+
+#### `AgreementVersion`
+| Column | Type | Notes |
+|---|---|---|
+| `Id` | `uuid` | PK |
+| `AgreementId` | `uuid` | FK → Agreement |
+| `VersionNumber` | `int` | Auto-increment per agreement |
+| `Body` | `text` | Full agreement body (Markdown) |
+| `AuthorId` | `uuid` | FK → User |
+| `ChangeNote` | `varchar(500)?` | Optional summary of changes |
+| `CreatedAt` | `timestamptz` | Immutable after creation |
+
+#### `Signatory`
+| Column | Type | Notes |
+|---|---|---|
+| `Id` | `uuid` | PK |
+| `AgreementId` | `uuid` | FK → Agreement |
+| `UserId` | `uuid?` | FK → User (null for guest signers) |
+| `Email` | `varchar(320)` | |
+| `Role` | `enum` | Owner, Collaborator, Signer, Viewer |
+| `InviteToken` | `varchar(64)?` | One-time tokenized invite |
+| `SignedAt` | `timestamptz?` | Null until signed |
+| `SignatureValue` | `text?` | Ed25519 signature (Base64) |
+| `SignerIp` | `inet?` | |
+| `VersionSignedId` | `uuid?` | FK → AgreementVersion |
+
+#### `Attachment`
+| Column | Type | Notes |
+|---|---|---|
+| `Id` | `uuid` | PK |
+| `AgreementId` | `uuid` | FK → Agreement |
+| `VersionId` | `uuid` | FK → AgreementVersion (pinned to version) |
+| `FileName` | `varchar(255)` | |
+| `ContentType` | `varchar(100)` | |
+| `StorageKey` | `text` | Object store key |
+| `FileSizeBytes` | `bigint` | |
+| `Sha256Hash` | `char(64)` | Hex-encoded |
+| `UploadedById` | `uuid` | FK → User |
+| `UploadedAt` | `timestamptz` | |
+
+#### `AuditEvent`
+| Column | Type | Notes |
+|---|---|---|
+| `Id` | `uuid` | PK |
+| `AgreementId` | `uuid` | FK → Agreement |
+| `ActorId` | `uuid?` | FK → User (null for system events) |
+| `EventType` | `varchar(100)` | e.g. `agreement.viewed`, `version.created` |
+| `Payload` | `jsonb?` | Structured event metadata |
+| `OccurredAt` | `timestamptz` | |
+| `IpAddress` | `inet?` | |
+
+---
+
+## API Surface
+
+All endpoints are prefixed `/api/v1`. Authentication is Bearer JWT unless marked `[public]`.
 
 ### Agreements
 
-| Method | Endpoint | Description |
+| Method | Path | Description |
 |---|---|---|
-| GET | `/agreements` | List agreements for authenticated user |
-| POST | `/agreements` | Create a new agreement |
-| GET | `/agreements/{id}` | Get agreement detail and current version |
-| PATCH | `/agreements/{id}` | Update agreement metadata (title, expiry) |
-| DELETE | `/agreements/{id}` | Soft-delete / revoke agreement |
+| `GET` | `/agreements` | List agreements for the authenticated user |
+| `POST` | `/agreements` | Create a new agreement |
+| `GET` | `/agreements/{id}` | Get agreement details + current version |
+| `PATCH` | `/agreements/{id}` | Update title, status, or expiry |
+| `DELETE` | `/agreements/{id}` | Soft-delete (owner only) |
 
 ### Versions
 
-| Method | Endpoint | Description |
+| Method | Path | Description |
 |---|---|---|
-| GET | `/agreements/{id}/versions` | List all versions |
-| POST | `/agreements/{id}/versions` | Save a new version snapshot |
-| GET | `/agreements/{id}/versions/{versionId}` | Get specific version content |
-| GET | `/agreements/{id}/versions/{a}/diff/{b}` | Diff two versions |
+| `GET` | `/agreements/{id}/versions` | List all versions |
+| `POST` | `/agreements/{id}/versions` | Save a new version (body required) |
+| `GET` | `/agreements/{id}/versions/{versionId}` | Get a specific version |
+| `GET` | `/agreements/{id}/versions/diff` | Diff two versions (`?from=&to=`) |
 
-### Parties
+### Signatories
 
-| Method | Endpoint | Description |
+| Method | Path | Description |
 |---|---|---|
-| GET | `/agreements/{id}/parties` | List all parties |
-| POST | `/agreements/{id}/parties` | Invite a party by email |
-| PUT | `/agreements/{id}/parties/{partyId}/accept` | Accept party invitation |
-| DELETE | `/agreements/{id}/parties/{partyId}` | Remove a party (drafter only) |
-
-### Amendments
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/agreements/{id}/amendments` | List amendments |
-| POST | `/agreements/{id}/amendments` | Propose an amendment |
-| PUT | `/agreements/{id}/amendments/{amendId}/accept` | Accept an amendment |
-| PUT | `/agreements/{id}/amendments/{amendId}/reject` | Reject an amendment |
-
-### Signatures
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/agreements/{id}/signatures` | List all signatures |
-| POST | `/agreements/{id}/signatures` | Submit a cryptographic signature |
-| DELETE | `/agreements/{id}/signatures/{sigId}` | Revoke own signature (with reason) |
+| `GET` | `/agreements/{id}/signatories` | List signatories and their status |
+| `POST` | `/agreements/{id}/signatories` | Invite a signatory |
+| `DELETE` | `/agreements/{id}/signatories/{sigId}` | Remove an unsigned signatory |
+| `POST` | `/agreements/{id}/signatories/{sigId}/sign` | Submit a cryptographic signature |
+| `GET` | `/sign/{token}` | `[public]` Resolve guest invite token |
+| `POST` | `/sign/{token}` | `[public]` Guest sign via token |
 
 ### Attachments
 
-| Method | Endpoint | Description |
+| Method | Path | Description |
 |---|---|---|
-| GET | `/agreements/{id}/attachments` | List attachments |
-| POST | `/agreements/{id}/attachments` | Upload an attachment |
-| GET | `/agreements/{id}/attachments/{attachId}` | Download attachment |
-| DELETE | `/agreements/{id}/attachments/{attachId}` | Remove attachment |
+| `GET` | `/agreements/{id}/attachments` | List attachments for the agreement |
+| `POST` | `/agreements/{id}/attachments` | Upload an attachment (multipart/form-data) |
+| `GET` | `/agreements/{id}/attachments/{attachId}` | Download attachment |
+| `DELETE` | `/agreements/{id}/attachments/{attachId}` | Remove attachment |
 
 ### Export
 
-| Method | Endpoint | Description |
+| Method | Path | Description |
 |---|---|---|
-| POST | `/agreements/{id}/export/pdf` | Generate and return court-ready PDF bundle |
-| GET | `/agreements/{id}/export/audit` | Export full audit event log as JSON |
+| `GET` | `/agreements/{id}/export/pdf` | Generate and stream court-ready PDF bundle |
+| `GET` | `/agreements/{id}/export/json` | Export full agreement record as structured JSON |
 
-### Real-time (SignalR)
+### Audit
 
-| Hub | Event | Direction | Description |
-|---|---|---|---|
-| `/hubs/agreement` | `VersionSaved` | Server → Client | Notify when a new version is saved |
-| `/hubs/agreement` | `AmendmentProposed` | Server → Client | Notify all parties of a new amendment |
-| `/hubs/agreement` | `SignatureAdded` | Server → Client | Notify when a party signs |
-| `/hubs/agreement` | `AgreementExecuted` | Server → Client | Broadcast when all signatures are collected |
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/agreements/{id}/audit` | Paginated audit log for the agreement |
 
----
+### Auth
 
-## 9. MVP Scope
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/auth/register` | Register a new user |
+| `POST` | `/auth/login` | Authenticate; returns JWT + refresh token |
+| `POST` | `/auth/refresh` | Rotate refresh token |
+| `POST` | `/auth/logout` | Revoke refresh token |
 
-The MVP delivers the core loop: **create → negotiate → sign → export**.
+### Real-Time (SignalR)
 
-### ✅ In Scope for MVP
+Hub path: `/hubs/agreements`
 
-- User registration, login, JWT auth, public key upload
-- Create, edit, and version agreements (rich text, clause structure)
-- Invite parties by email; accept/decline invitations
-- Propose, accept, and reject amendments with full diff view
-- Cryptographic signature submission and verification
-- Basic attachment upload (PDF and image support)
-- Court-ready PDF bundle export
-- Email notifications for all lifecycle events
-- Full audit event log per agreement
-- Responsive Vue 3 SPA with dashboard and agreement detail views
-- Docker Compose environment for local development
-- OpenAPI documentation via Scalar
-
-### ❌ Out of Scope for MVP
-
-- SSO / OAuth2 social login
-- In-app real-time collaborative editing (SignalR hub is scaffolded but editing is
-  optimistic-lock only)
-- Agreement templates library
-- Witness / notary workflows
-- Mobile native apps
-- Blockchain anchoring
-- Payment / escrow integration
-- Advanced analytics dashboard
+| Event | Direction | Payload |
+|---|---|---|
+| `VersionCreated` | Server → Client | `{ agreementId, versionId, versionNumber, authorName }` |
+| `SignatoryUpdated` | Server → Client | `{ agreementId, signatoryId, status }` |
+| `AgreementStatusChanged` | Server → Client | `{ agreementId, newStatus }` |
+| `AttachmentUploaded` | Server → Client | `{ agreementId, attachmentId, fileName }` |
 
 ---
 
-## 10. Roadmap & Future Enhancements
+## MVP Roadmap
 
-### v1.1 — Collaboration & Templates
-- [ ] Real-time collaborative editing via SignalR operational transforms
-- [ ] Template library: NDA, freelance contract, lease agreement, MOU, and more
-- [ ] Clause library: reusable, pre-approved clause building blocks
-- [ ] In-agreement commenting and threaded discussion
+### Phase 1 — Foundation · Target: October 2026
+- [ ] Project scaffolding (monorepo, CI pipeline, Docker Compose)
+- [ ] Auth (register, login, JWT, refresh)
+- [ ] Agreement CRUD with versioning
+- [ ] Diff viewer (side-by-side)
+- [ ] Basic Vue frontend (agreement list, detail, editor)
 
-### v1.2 — Identity & Verification
-- [ ] OAuth2 / OpenID Connect social login (Google, Microsoft, LinkedIn)
-- [ ] Identity assertion: upload government ID for enhanced party verification
-- [ ] Witness and notary co-signer workflows
-- [ ] Verified organization accounts with domain verification
+### Phase 2 — Signatures · Target: November 2026
+- [ ] Ed25519 key generation and storage
+- [ ] Signatory invitation (registered user + guest token flow)
+- [ ] Cryptographic signing endpoint
+- [ ] Signature manifest display in UI
+- [ ] Status workflow automation (auto-activate on all signatures collected)
 
-### v1.3 — Legal Integrations
-- [ ] DocuSign and Adobe Sign import/export
-- [ ] Jurisdiction-aware clause suggestions (US, EU, UK)
-- [ ] Legal metadata tagging (governing law, dispute resolution, venue)
-- [ ] Attorney review invitation (read-only counsel access)
+### Phase 3 — Attachments & Export · Target: December 2026
+- [ ] File upload to object store with SHA-256 hashing
+- [ ] Attachment list and download
+- [ ] QuestPDF court-ready bundle generation
+- [ ] PDF digital signing with server key
+- [ ] JSON export
 
-### v1.4 — Trust & Immutability
-- [ ] Blockchain anchoring: hash agreements to a public ledger (Ethereum / Polygon)
-- [ ] Timestamp Authority (TSA) RFC 3161 time-stamping for signatures
-- [ ] Decentralized identity (DID) support
+### Phase 4 — Audit & Hardening · Target: January 2027
+- [ ] Full audit event system
+- [ ] Audit log UI (filterable, paginated)
+- [ ] Rate limiting and abuse controls
+- [ ] Comprehensive integration and E2E test suite
+- [ ] Security review pass
 
-### v1.5 — Automation & Integrations
-- [ ] Webhook outbound events for all agreement state transitions
-- [ ] Zapier / Make.com integration
-- [ ] Payment and escrow triggers on agreement execution
-- [ ] API key management for programmatic agreement creation
-
-### v2.0 — Mobile & Offline
-- [ ] iOS and Android apps (Capacitor or MAUI Hybrid)
-- [ ] Offline-capable agreement drafting with sync on reconnect
-- [ ] Biometric signature capture on mobile
+### Phase 5 — Organizations & Polish · Target: Q1 2027
+- [ ] Organization accounts (multi-user, shared agreement library)
+- [ ] Role-based access control enforcement
+- [ ] Notification emails (invite, signature request, agreement activated)
+- [ ] Agreement templates and clause library
+- [ ] Mobile-responsive PWA polish
 
 ---
 
-## 11. Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- [Node.js 22+](https://nodejs.org/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [pnpm](https://pnpm.io/) (recommended) or npm
+- [Node.js 22+](https://nodejs.org/) and [pnpm](https://pnpm.io/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for PostgreSQL + MinIO)
 
-### 1. Clone the Repository
+### Local Development
 
 ```bash
-git clone https://github.com/your-org/accordly.git
+# 1. Clone the repository
+git clone https://github.com/danj210/accordly.git
 cd accordly
-```
 
-### 2. Start Infrastructure (PostgreSQL, Redis, MinIO)
-
-```bash
+# 2. Start infrastructure (PostgreSQL + MinIO)
 docker compose up -d
-```
 
-### 3. Configure the Backend
-
-```bash
-cp src/Accordly.Api/appsettings.Development.json.example \
-   src/Accordly.Api/appsettings.Development.json
-# Edit the file to set your JWT secret, DB connection string, etc.
-```
-
-### 4. Run Database Migrations
-
-```bash
+# 3. Apply database migrations
 cd src/Accordly.Api
 dotnet ef database update
-```
 
-### 5. Start the Backend
+# 4. Run the API
+dotnet run
 
-```bash
-dotnet run --project src/Accordly.Api
-# API available at https://localhost:7080
-# OpenAPI docs at https://localhost:7080/scalar
-```
-
-### 6. Start the Frontend
-
-```bash
-cd frontend
+# 5. In a new terminal, start the frontend
+cd ../../frontend
 pnpm install
 pnpm dev
-# App available at http://localhost:5173
 ```
 
-### Repository Structure
+The API will be available at `https://localhost:5001` and the Vue dev server at `http://localhost:5173`.
 
-```
-accordly/
-├── src/
-│   ├── Accordly.Api/            # ASP.NET Core Web API
-│   ├── Accordly.Core/           # Domain models, interfaces, business logic
-│   ├── Accordly.Infrastructure/ # EF Core, repositories, storage, crypto
-│   └── Accordly.Tests/          # xUnit test projects
-├── frontend/                    # Vue 3 SPA
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── stores/                # Pinia stores
-│   │   └── composables/
-│   └── tests/
-├── docker-compose.yml
-├── helm/                          # Kubernetes Helm chart
-├── .github/workflows/             # CI/CD pipelines
-└── docs/                          # Architecture decision records (ADRs)
+### Running Tests
+
+```bash
+# Backend
+dotnet test
+
+# Frontend unit tests
+pnpm test
+
+# Frontend E2E (Playwright)
+pnpm test:e2e
 ```
 
 ---
 
-## 12. Contributing
+## Environment Variables
 
-Contributions are welcome and appreciated. Accordly follows a conventional commit and
-pull-request workflow.
+### API (`src/Accordly.Api/appsettings.Development.json`)
 
-### Getting Involved
+| Variable | Description | Default |
+|---|---|---|
+| `ConnectionStrings__DefaultConnection` | PostgreSQL connection string | `Host=localhost;Database=accordly;...` |
+| `Storage__Endpoint` | S3-compatible endpoint | `http://localhost:9000` |
+| `Storage__Bucket` | Object store bucket name | `accordly` |
+| `Storage__AccessKey` | Object store access key | `minioadmin` |
+| `Storage__SecretKey` | Object store secret key | `minioadmin` |
+| `Jwt__Secret` | JWT signing secret (≥ 32 chars) | *Required* |
+| `Jwt__Issuer` | JWT issuer claim | `accordly` |
+| `Jwt__Audience` | JWT audience claim | `accordly-client` |
+| `Jwt__ExpiryMinutes` | Access token lifetime | `60` |
+| `ServerKey__PrivateKey` | Ed25519 server private key (Base64) | *Required* |
+| `Email__Host` | SMTP host | `localhost` |
+| `Email__Port` | SMTP port | `1025` |
 
-1. **Browse open issues** — look for issues tagged `good first issue` or `help wanted`.
-2. **Propose a feature** — open a GitHub Discussion before building something significant.
-3. **Report a bug** — use the Bug Report issue template and include reproduction steps.
+### Frontend (`frontend/.env.local`)
 
-### Pull Request Process
-
-1. Fork the repository and create a feature branch from `main`:
-   ```bash
-   git checkout -b feat/your-feature-name
-   ```
-2. Write tests for all new behavior. PRs that reduce test coverage will not be merged.
-3. Follow the existing code style. Backend: run `dotnet format`. Frontend: run `pnpm lint`.
-4. Write [Conventional Commits](https://www.conventionalcommits.org/) messages:
-   ```
-   feat(signatures): add ECDSA P-384 support
-   fix(export): handle agreements with no attachments
-   docs(readme): update API surface table
-   ```
-5. Open a pull request against `main` with a clear description of the change and why it
-   was made.
-6. All PRs require at least **one approving review** and a passing CI pipeline.
-
-### Code of Conduct
-
-This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
-By participating, you agree to uphold a respectful, inclusive environment for all
-contributors.
-
-### Security Vulnerabilities
-
-Please **do not** open public GitHub issues for security vulnerabilities. Instead, email
-`security@accordly.io` with a detailed description. We aim to acknowledge within 48 hours
-and provide a fix timeline within 7 days.
+| Variable | Description |
+|---|---|
+| `VITE_API_BASE_URL` | Accordly API base URL |
+| `VITE_SIGNALR_HUB_URL` | SignalR hub URL |
 
 ---
 
-## 13. License
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes following [Conventional Commits](https://www.conventionalcommits.org/)
+4. Push and open a Pull Request against `main`
+
+Please ensure all tests pass and new functionality is covered before requesting review.
+
+---
+
+## License
 
 Accordly is released under the [MIT License](LICENSE).
 
-```
-Copyright (c) 2026 Accordly Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
-
 ---
 
-<div align="center">
-
-**Built with care for people who need their word to mean something.**
-
-[Report a Bug](https://github.com/your-org/accordly/issues) · [Request a Feature](https://github.com/your-org/accordly/discussions) · [Read the Docs](https://docs.accordly.io)
-
-</div>
+*Built with intention. Agreements that mean something.*

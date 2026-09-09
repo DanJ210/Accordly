@@ -1,0 +1,1 @@
+<template><section class="panel"><p class="eyebrow">Guest signature</p><h2>Review and sign</h2><p class="muted">This secure signing link is ready for the agreement.</p><button class="primary">Submit signature</button></section></template>

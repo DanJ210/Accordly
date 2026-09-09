@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Accordly.Api/Accordly.Api.csproj" />
+    <Project Path="src/Accordly.Application/Accordly.Application.csproj" />
+    <Project Path="src/Accordly.Contracts/Accordly.Contracts.csproj" />
+    <Project Path="src/Accordly.Domain/Accordly.Domain.csproj" />
+    <Project Path="src/Accordly.Infrastructure/Accordly.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Accordly.E2E/Accordly.E2E.csproj" />
+    <Project Path="tests/Accordly.Integration/Accordly.Integration.csproj" />
+    <Project Path="tests/Accordly.Unit/Accordly.Unit.csproj" />
+  </Folder>
+</Solution>

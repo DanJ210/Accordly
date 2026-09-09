@@ -1,0 +1,2 @@
+<template><div class="app-shell"><header><RouterLink class="brand" to="/">ACCORDLY</RouterLink><nav><RouterLink to="/">Overview</RouterLink><RouterLink to="/agreements">Agreements</RouterLink></nav><button class="ghost" @click="logout">Sign out</button></header><main><slot /></main></div></template>
+<script setup lang="ts">import { useAuthStore } from '@/stores/auth'; const logout = () => useAuthStore().logout()</script>

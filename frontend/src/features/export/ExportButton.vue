@@ -1,0 +1,2 @@
+<template><button class="primary" @click="download">Export PDF</button></template>
+<script setup lang="ts">import { api } from '@/composables/useApi'; const props=defineProps<{ agreementId: string }>(); async function download(){ const response=await api.get(`/agreements/${props.agreementId}/export/pdf`,{responseType:'blob'}); const url=URL.createObjectURL(response.data); const link=document.createElement('a'); link.href=url; link.download='agreement.pdf'; link.click(); URL.revokeObjectURL(url) }</script>
