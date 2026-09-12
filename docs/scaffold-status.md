@@ -16,13 +16,13 @@
 - Initial EF Core migration, inspected SQL, and verified SQL Server application
 - EF repositories, unit of work, S3-compatible storage, SMTP email, and Hangfire registration
 - API composition root with Carter, JWT bearer configuration, Serilog, Swagger, exception middleware, and SignalR hub
+- Separate Carter modules for versions, signatories, attachments, export, auth, and audit, with authorization excluded from public auth and guest-signing routes
 - Docker Compose services for SQL Server, MinIO, and MailHog
 - Vue/Vite frontend shell, router, Pinia stores, Axios/SignalR composables, layouts, pages, and initial feature components
 - Root README aligned with the implemented SQL Server and MSTest stack
 
 ## Still Outstanding
 
-- Complete Carter module separation for versions, signatories, attachments, export, auth, and audit
 - Claim-based owner identity propagation in agreement endpoints
 - Real Identity registration, login, JWT issuance, refresh-token rotation, and logout
 - Integration, E2E, and frontend tests
@@ -32,4 +32,4 @@
 
 ## Validation Notes
 
-The initial backend solution build, the `Accordly.Unit` test project, and the frontend type check/production build have passed. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.
+The initial backend solution build, the `Accordly.Unit` test project, and the frontend type check/production build have passed. The API project build also passes after the Carter module separation; current NuGet vulnerability advisories remain as warnings. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.

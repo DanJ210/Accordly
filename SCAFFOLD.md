@@ -234,7 +234,7 @@ Check off each item as it is completed and committed.
   Wire `GET /api/v1/agreements/{id}` → `GetAgreementQuery` via MediatR.
   Remaining three return `Results.Ok("not yet implemented")` stubs.
 
-- [ ] **6.7 — Remaining route modules (stubs)**
+- [x] **6.7 — Remaining route modules (stubs)**
   Create stub `ICarterModule` implementations for:
   `VersionsModule`, `SignatoriesModule`, `AttachmentsModule`, `ExportModule`, `AuthModule`, `AuditModule`.
   Each registers routes with the correct HTTP method and path but returns `Results.Ok("stub")`.
