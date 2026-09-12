@@ -9,7 +9,7 @@
 - Domain event records for status changes, version creation, and signatures
 - Contracts records for agreements, versions, signatories, attachments, and auth
 - Application repository/service interfaces
-- Create-agreement command, handler, validator, and get-agreement query
+- Create-agreement command, handler, validator, get-agreement query, and MediatR validation pipeline
 - SQL Server EF Core context and entity configurations
 - EF repositories, unit of work, S3-compatible storage, SMTP email, and Hangfire registration
 - API composition root with Carter, JWT bearer configuration, Serilog, Swagger, exception middleware, and SignalR hub
@@ -18,7 +18,6 @@
 
 ## Still Outstanding
 
-- MediatR validation pipeline behavior
 - Initial EF Core migration and database verification
 - Complete Carter module separation for versions, signatories, attachments, export, auth, and audit
 - Claim-based owner identity propagation in agreement endpoints

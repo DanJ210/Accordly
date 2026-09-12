@@ -40,7 +40,7 @@ Contains API request and response records. Contracts are transport types and mus
 
 ### `Accordly.Application`
 
-Contains use cases, MediatR commands and queries, FluentValidation validators, repository interfaces, and service interfaces. It depends on Domain and Contracts.
+Contains use cases, MediatR commands and queries, FluentValidation validators, the MediatR validation pipeline, repository interfaces, and service interfaces. It depends on Domain and Contracts.
 
 ### `Accordly.Infrastructure`
 

@@ -123,7 +123,7 @@ Check off each item as it is completed and committed.
   Create `Agreements/Queries/GetAgreement/GetAgreementQueryHandler.cs`:
   fetch by id, return null if not found.
 
-- [ ] **4.6 — Application service registration**
+- [x] **4.6 — Application service registration**
   Create `ApplicationServiceExtensions.cs` with `AddApplication(this IServiceCollection)`.
   Register MediatR scanning `Accordly.Application` assembly.
   Register FluentValidation validators scanning the same assembly.
