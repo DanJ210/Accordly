@@ -7,6 +7,7 @@
 - .NET 10 solution in `Accordly.slnx`
 - Domain entities, enums, and base entity
 - Domain event records for status changes, version creation, and signatures
+- Agreement status transition rules and unit tests
 - Contracts records for agreements, versions, signatories, attachments, and auth
 - Application repository/service interfaces
 - Create-agreement command, handler, validator, get-agreement query, and MediatR validation pipeline
@@ -24,8 +25,7 @@
 - Complete Carter module separation for versions, signatories, attachments, export, auth, and audit
 - Claim-based owner identity propagation in agreement endpoints
 - Real Identity registration, login, JWT issuance, refresh-token rotation, and logout
-- Agreement status transition rules
-- Agreement status, integration, E2E, and frontend tests
+- Integration, E2E, and frontend tests
 - Full editor route and Tiptap AgreementVersion save workflow
 - Complete agreement detail composition and SignalR-driven UI updates
 - Pagination and agreement creation modal

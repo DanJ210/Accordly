@@ -27,6 +27,8 @@ All persisted domain entities use Guid identifiers and UTC `DateTimeOffset` time
 - `CreatedAt` and `UpdatedAt`: timestamps
 - `ExpiresAt`: optional timestamp
 
+Agreements follow `Draft -> PendingSignatures -> Active`, after which they may transition to either `Expired` or `Terminated`. `Expired` and `Terminated` are terminal states.
+
 ## AgreementVersion
 
 - `Id`: Guid primary key

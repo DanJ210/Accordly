@@ -252,7 +252,7 @@ Check off each item as it is completed and committed.
 
 ## Phase 7 — Test Projects
 
-- [ ] **7.1 — Unit: AgreementStatus transition tests**
+- [x] **7.1 — Unit: AgreementStatus transition tests**
   Create `Domain/AgreementStatusTests.cs` in `Accordly.Unit`.
   Use `[TestClass]` and `[TestMethod]`. Assert valid and invalid status transitions
   (e.g., cannot move from `Active` back to `Draft`).
