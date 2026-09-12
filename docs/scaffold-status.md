@@ -11,6 +11,7 @@
 - Application repository/service interfaces
 - Create-agreement command, handler, validator, get-agreement query, and MediatR validation pipeline
 - SQL Server EF Core context and entity configurations
+- Initial EF Core migration, inspected SQL, and verified SQL Server application
 - EF repositories, unit of work, S3-compatible storage, SMTP email, and Hangfire registration
 - API composition root with Carter, JWT bearer configuration, Serilog, Swagger, exception middleware, and SignalR hub
 - Docker Compose services for SQL Server, MinIO, and MailHog
@@ -19,7 +20,6 @@
 
 ## Still Outstanding
 
-- Initial EF Core migration and database verification
 - Complete Carter module separation for versions, signatories, attachments, export, auth, and audit
 - Claim-based owner identity propagation in agreement endpoints
 - Real Identity registration, login, JWT issuance, refresh-token rotation, and logout

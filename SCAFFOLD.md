@@ -171,7 +171,7 @@ Check off each item as it is completed and committed.
   all repositories, unit of work, storage service, email service,
   Hangfire (SQL Server, same connection string, schema prefix `Hangfire`).
 
-- [ ] **5.8 — Initial EF Core migration**
+- [x] **5.8 — Initial EF Core migration**
   Run: `dotnet ef migrations add InitialCreate --project src/Accordly.Infrastructure --startup-project src/Accordly.Api`
   Commit the generated `Migrations/` folder.
   Verify the migration SQL creates all expected tables.
@@ -436,7 +436,7 @@ Before marking the scaffold complete, verify all of the following:
 - [ ] `dotnet build` — zero errors, zero warnings
 - [ ] `dotnet test` — all MSTest tests pass (unit + integration)
 - [ ] `docker compose up -d` — all three services start cleanly
-- [ ] `dotnet ef database update` — migration applies against local SQL Server container
+- [x] `dotnet ef database update` — migration applies against local SQL Server container
 - [ ] API starts and Swagger UI loads at `https://localhost:5001/swagger`
 - [ ] `pnpm tsc --noEmit` — passes with strict mode
 - [ ] `pnpm test` — all Vitest tests pass

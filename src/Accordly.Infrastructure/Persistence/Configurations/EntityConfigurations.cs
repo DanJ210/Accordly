@@ -1,3 +1,4 @@
+using Accordly.Domain.Common;
 using Accordly.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -6,10 +7,10 @@ namespace Accordly.Infrastructure.Persistence.Configurations;
 
 internal static class ConfigurationHelpers
 {
-    public static void ConfigureKey<TEntity>(EntityTypeBuilder<TEntity> builder) where TEntity : class
+    public static void ConfigureKey<TEntity>(EntityTypeBuilder<TEntity> builder) where TEntity : Entity
     {
-        builder.HasKey(entity => EF.Property<Guid>(entity, "Id"));
-        builder.Property<Guid>("Id").ValueGeneratedNever();
+        builder.HasKey(entity => entity.Id);
+        builder.Property(entity => entity.Id).ValueGeneratedNever();
     }
 }
 
