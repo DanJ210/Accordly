@@ -123,3 +123,75 @@ Microsoft.Data.SqlClient.SqlException (0x80131904): Login failed for user 'sa'.
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state) in C:\projects\hangfire-525\src\Hangfire.Core\Processing\BackgroundExecution.cs:line 118
 ClientConnectionId:3200a488-77a4-474e-89bc-024d164deb70
 Error Number:18456,State:1,Class:14
+2026-09-11 23:48:48.379 -04:00 [ERR] Execution BackgroundServerProcess is still in the Failed state for 00:00:15.0270949 due to an exception, will be retried in no more than 00:00:15
+Microsoft.Data.SqlClient.SqlException (0x80131904): Login failed for user 'sa'.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.CompleteLogin(Boolean enlistOK)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, IDbConnectionPool pool, Func`3 accessTokenCallback)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionPoolGroupProviderInfo poolGroupProviderInfo, IDbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(IDbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 taskCompletionSource, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Hangfire.SqlServer.SqlServerStorage.CreateAndOpenConnection() in C:\projects\hangfire-525\src\Hangfire.SqlServer\SqlServerStorage.cs:line 406
+   at Hangfire.SqlServer.SqlServerStorage.UseConnection[TContext,TResult](DbConnection dedicatedConnection, Func`4 func, TContext context) in C:\projects\hangfire-525\src\Hangfire.SqlServer\SqlServerStorage.cs:line 291
+   at Hangfire.SqlServer.SqlServerConnection.AnnounceServer(String serverId, ServerContext context) in C:\projects\hangfire-525\src\Hangfire.SqlServer\SqlServerConnection.cs:line 512
+   at Hangfire.Server.BackgroundServerProcess.CreateServer(BackgroundServerContext context) in C:\projects\hangfire-525\src\Hangfire.Core\Server\BackgroundServerProcess.cs:line 209
+   at Hangfire.Server.BackgroundServerProcess.Execute(Guid executionId, BackgroundExecution execution, CancellationToken stoppingToken, CancellationToken stoppedToken, CancellationToken shutdownToken) in C:\projects\hangfire-525\src\Hangfire.Core\Server\BackgroundServerProcess.cs:line 101
+   at Hangfire.Server.BackgroundProcessingServer.RunServer(Guid executionId, Object state) in C:\projects\hangfire-525\src\Hangfire.Core\Server\BackgroundProcessingServer.cs:line 249
+   at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state) in C:\projects\hangfire-525\src\Hangfire.Core\Processing\BackgroundExecution.cs:line 118
+ClientConnectionId:771c509e-c558-4789-8275-8b919379dd1d
+Error Number:18456,State:1,Class:14
+2026-09-11 23:48:56.959 -04:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5099/api/v1/agreements/11111111-1111-1111-1111-111111111111/versions - null null
+2026-09-11 23:48:57.067 -04:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-11 23:48:57.071 -04:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-11 23:48:57.074 -04:00 [INF] HTTP GET /api/v1/agreements/11111111-1111-1111-1111-111111111111/versions responded 401 in 75.5281 ms
+2026-09-11 23:48:57.094 -04:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5099/api/v1/agreements/11111111-1111-1111-1111-111111111111/versions - 401 0 null 134.6955ms
+2026-09-11 23:48:57.110 -04:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5099/api/v1/sign/test-token - null null
+2026-09-11 23:48:57.116 -04:00 [INF] Executing endpoint 'HTTP: GET /api/v1/sign/{token}'
+2026-09-11 23:48:57.127 -04:00 [INF] Setting HTTP status code 200.
+2026-09-11 23:48:57.128 -04:00 [INF] Writing value of type 'String' as Json.
+2026-09-11 23:48:57.131 -04:00 [INF] Executed endpoint 'HTTP: GET /api/v1/sign/{token}'
+2026-09-11 23:48:57.132 -04:00 [INF] HTTP GET /api/v1/sign/test-token responded 200 in 19.7418 ms
+2026-09-11 23:48:57.135 -04:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5099/api/v1/sign/test-token - 200 null application/json; charset=utf-8 25.4758ms
+2026-09-11 23:48:57.142 -04:00 [INF] Request starting HTTP/1.1 POST http://127.0.0.1:5099/api/v1/auth/login - application/x-www-form-urlencoded 0
+2026-09-11 23:48:57.145 -04:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-11 23:48:57.146 -04:00 [INF] Setting HTTP status code 200.
+2026-09-11 23:48:57.147 -04:00 [INF] Writing value of type 'String' as Json.
+2026-09-11 23:48:57.149 -04:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-11 23:48:57.150 -04:00 [INF] HTTP POST /api/v1/auth/login responded 200 in 5.7671 ms
+2026-09-11 23:48:57.151 -04:00 [INF] Request finished HTTP/1.1 POST http://127.0.0.1:5099/api/v1/auth/login - 200 null application/json; charset=utf-8 8.8033ms
+2026-09-11 23:49:00.779 -04:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5099/api/v1/agreements/11111111-1111-1111-1111-111111111111/versions - null null
+2026-09-11 23:49:00.784 -04:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-11 23:49:00.785 -04:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-11 23:49:00.786 -04:00 [INF] HTTP GET /api/v1/agreements/11111111-1111-1111-1111-111111111111/versions responded 401 in 3.2104 ms
+2026-09-11 23:49:00.787 -04:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5099/api/v1/agreements/11111111-1111-1111-1111-111111111111/versions - 401 0 null 7.5158ms
+2026-09-11 23:49:00.794 -04:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:5099/api/v1/sign/test-token - null null
+2026-09-11 23:49:00.796 -04:00 [INF] Executing endpoint 'HTTP: GET /api/v1/sign/{token}'
+2026-09-11 23:49:00.797 -04:00 [INF] Setting HTTP status code 200.
+2026-09-11 23:49:00.798 -04:00 [INF] Writing value of type 'String' as Json.
+2026-09-11 23:49:00.799 -04:00 [INF] Executed endpoint 'HTTP: GET /api/v1/sign/{token}'
+2026-09-11 23:49:00.799 -04:00 [INF] HTTP GET /api/v1/sign/test-token responded 200 in 3.5959 ms
+2026-09-11 23:49:00.801 -04:00 [INF] Request finished HTTP/1.1 GET http://127.0.0.1:5099/api/v1/sign/test-token - 200 null application/json; charset=utf-8 7.6511ms
+2026-09-11 23:49:00.804 -04:00 [INF] Request starting HTTP/1.1 POST http://127.0.0.1:5099/api/v1/auth/login - application/x-www-form-urlencoded 0
+2026-09-11 23:49:00.808 -04:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-11 23:49:00.809 -04:00 [INF] Setting HTTP status code 200.
+2026-09-11 23:49:00.810 -04:00 [INF] Writing value of type 'String' as Json.
+2026-09-11 23:49:00.812 -04:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-11 23:49:00.815 -04:00 [INF] HTTP POST /api/v1/auth/login responded 200 in 7.5664 ms
+2026-09-11 23:49:00.819 -04:00 [INF] Request finished HTTP/1.1 POST http://127.0.0.1:5099/api/v1/auth/login - 200 null application/json; charset=utf-8 14.4668ms
