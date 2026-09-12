@@ -1,6 +1,6 @@
 # Scaffold Status
 
-`SCAFFOLD.md` remains the detailed task list. This page summarizes the current state of the project projects.
+`SCAFFOLD.md` remains the detailed task list. This page summarizes the current state of the project.
 
 ## Implemented Initial Slice
 
@@ -15,6 +15,7 @@
 - API composition root with Carter, JWT bearer configuration, Serilog, Swagger, exception middleware, and SignalR hub
 - Docker Compose services for SQL Server, MinIO, and MailHog
 - Vue/Vite frontend shell, router, Pinia stores, Axios/SignalR composables, layouts, pages, and initial feature components
+- Root README aligned with the implemented SQL Server and MSTest stack
 
 ## Still Outstanding
 
@@ -27,7 +28,6 @@
 - Full editor route and Tiptap AgreementVersion save workflow
 - Complete agreement detail composition and SignalR-driven UI updates
 - Pagination and agreement creation modal
-- Documentation cleanup in the original README where legacy PostgreSQL/xUnit references remain
 
 ## Validation Notes
 

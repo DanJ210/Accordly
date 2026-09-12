@@ -115,8 +115,8 @@ Accordly follows a clean separation between a stateless REST/WebSocket API backe
 └───────────┬──────────────────┬──────────────────────────────────┘
             │                  │
    ┌────────▼────────┐  ┌──────▼──────────┐
-   │   PostgreSQL    │  │   Object Store  │
-   │  (EF Core 10)   │  │  (S3-compatible)│
+  │ SQL Server 2022 │  │   Object Store  │
+  │  (EF Core 10)   │  │  (S3-compatible)│
    └─────────────────┘  └─────────────────┘
 ```
 
@@ -127,14 +127,14 @@ Accordly follows a clean separation between a stateless REST/WebSocket API backe
 | Runtime | .NET 10 / ASP.NET Core Minimal APIs |
 | Route modules | Carter |
 | ORM | Entity Framework Core 10 |
-| Database | PostgreSQL 16 |
+| Database | SQL Server 2022 |
 | Real-time | SignalR |
 | Auth | ASP.NET Core Identity + JWT Bearer |
 | File storage | S3-compatible object store (MinIO for local dev) |
 | PDF generation | QuestPDF |
 | Cryptography | .NET `System.Security.Cryptography` (Ed25519) |
 | Background jobs | Hangfire |
-| Testing | xUnit + Testcontainers |
+| Testing | MSTest + Testcontainers.MsSql |
 
 **Project layout:**
 
@@ -197,75 +197,75 @@ frontend/
 #### `User`
 | Column | Type | Notes |
 |---|---|---|
-| `Id` | `uuid` | PK |
-| `Email` | `varchar(320)` | Unique, verified |
-| `DisplayName` | `varchar(100)` | |
-| `PublicKey` | `text` | Ed25519 public key (Base64) |
-| `CreatedAt` | `timestamptz` | |
-| `OrganizationId` | `uuid?` | FK → Organization |
+| `Id` | `uniqueidentifier` | PK |
+| `Email` | `nvarchar(320)` | Unique, verified |
+| `DisplayName` | `nvarchar(100)` | |
+| `PublicKey` | `nvarchar(max)` | Ed25519 public key (Base64) |
+| `CreatedAt` | `datetimeoffset` | |
+| `OrganizationId` | `uniqueidentifier?` | FK → Organization |
 
 #### `Agreement`
 | Column | Type | Notes |
 |---|---|---|
-| `Id` | `uuid` | PK |
-| `Title` | `varchar(250)` | |
-| `Status` | `enum` | Draft, PendingSignatures, Active, Expired, Terminated |
-| `OwnerId` | `uuid` | FK → User |
-| `OrganizationId` | `uuid?` | FK → Organization |
-| `CurrentVersionId` | `uuid` | FK → AgreementVersion |
-| `CreatedAt` | `timestamptz` | |
-| `UpdatedAt` | `timestamptz` | |
-| `ExpiresAt` | `timestamptz?` | |
+| `Id` | `uniqueidentifier` | PK |
+| `Title` | `nvarchar(250)` | |
+| `Status` | `nvarchar` | Draft, PendingSignatures, Active, Expired, Terminated |
+| `OwnerId` | `uniqueidentifier` | FK → User |
+| `OrganizationId` | `uniqueidentifier?` | FK → Organization |
+| `CurrentVersionId` | `uniqueidentifier` | FK → AgreementVersion |
+| `CreatedAt` | `datetimeoffset` | |
+| `UpdatedAt` | `datetimeoffset` | |
+| `ExpiresAt` | `datetimeoffset?` | |
 
 #### `AgreementVersion`
 | Column | Type | Notes |
 |---|---|---|
-| `Id` | `uuid` | PK |
-| `AgreementId` | `uuid` | FK → Agreement |
+| `Id` | `uniqueidentifier` | PK |
+| `AgreementId` | `uniqueidentifier` | FK → Agreement |
 | `VersionNumber` | `int` | Auto-increment per agreement |
-| `Body` | `text` | Full agreement body (Markdown) |
-| `AuthorId` | `uuid` | FK → User |
-| `ChangeNote` | `varchar(500)?` | Optional summary of changes |
-| `CreatedAt` | `timestamptz` | Immutable after creation |
+| `Body` | `nvarchar(max)` | Full agreement body (Markdown) |
+| `AuthorId` | `uniqueidentifier` | FK → User |
+| `ChangeNote` | `nvarchar(500)?` | Optional summary of changes |
+| `CreatedAt` | `datetimeoffset` | Immutable after creation |
 
 #### `Signatory`
 | Column | Type | Notes |
 |---|---|---|
-| `Id` | `uuid` | PK |
-| `AgreementId` | `uuid` | FK → Agreement |
-| `UserId` | `uuid?` | FK → User (null for guest signers) |
-| `Email` | `varchar(320)` | |
-| `Role` | `enum` | Owner, Collaborator, Signer, Viewer |
-| `InviteToken` | `varchar(64)?` | One-time tokenized invite |
-| `SignedAt` | `timestamptz?` | Null until signed |
-| `SignatureValue` | `text?` | Ed25519 signature (Base64) |
-| `SignerIp` | `inet?` | |
-| `VersionSignedId` | `uuid?` | FK → AgreementVersion |
+| `Id` | `uniqueidentifier` | PK |
+| `AgreementId` | `uniqueidentifier` | FK → Agreement |
+| `UserId` | `uniqueidentifier?` | FK → User (null for guest signers) |
+| `Email` | `nvarchar(320)` | |
+| `Role` | `nvarchar` | Owner, Collaborator, Signer, Viewer |
+| `InviteToken` | `nvarchar(64)?` | One-time tokenized invite |
+| `SignedAt` | `datetimeoffset?` | Null until signed |
+| `SignatureValue` | `nvarchar(max)?` | Ed25519 signature (Base64) |
+| `SignerIp` | `nvarchar(45)?` | |
+| `VersionSignedId` | `uniqueidentifier?` | FK → AgreementVersion |
 
 #### `Attachment`
 | Column | Type | Notes |
 |---|---|---|
-| `Id` | `uuid` | PK |
-| `AgreementId` | `uuid` | FK → Agreement |
-| `VersionId` | `uuid` | FK → AgreementVersion (pinned to version) |
-| `FileName` | `varchar(255)` | |
-| `ContentType` | `varchar(100)` | |
-| `StorageKey` | `text` | Object store key |
+| `Id` | `uniqueidentifier` | PK |
+| `AgreementId` | `uniqueidentifier` | FK → Agreement |
+| `VersionId` | `uniqueidentifier` | FK → AgreementVersion (pinned to version) |
+| `FileName` | `nvarchar(255)` | |
+| `ContentType` | `nvarchar(100)` | |
+| `StorageKey` | `nvarchar(max)` | Object store key |
 | `FileSizeBytes` | `bigint` | |
 | `Sha256Hash` | `char(64)` | Hex-encoded |
-| `UploadedById` | `uuid` | FK → User |
-| `UploadedAt` | `timestamptz` | |
+| `UploadedById` | `uniqueidentifier` | FK → User |
+| `UploadedAt` | `datetimeoffset` | |
 
 #### `AuditEvent`
 | Column | Type | Notes |
 |---|---|---|
-| `Id` | `uuid` | PK |
-| `AgreementId` | `uuid` | FK → Agreement |
-| `ActorId` | `uuid?` | FK → User (null for system events) |
-| `EventType` | `varchar(100)` | e.g. `agreement.viewed`, `version.created` |
-| `Payload` | `jsonb?` | Structured event metadata |
-| `OccurredAt` | `timestamptz` | |
-| `IpAddress` | `inet?` | |
+| `Id` | `uniqueidentifier` | PK |
+| `AgreementId` | `uniqueidentifier` | FK → Agreement |
+| `ActorId` | `uniqueidentifier?` | FK → User (null for system events) |
+| `EventType` | `nvarchar(100)` | e.g. `agreement.viewed`, `version.created` |
+| `Payload` | `nvarchar(max)?` | Structured event metadata as JSON |
+| `OccurredAt` | `datetimeoffset` | |
+| `IpAddress` | `nvarchar(45)?` | |
 
 ---
 
@@ -392,7 +392,7 @@ Hub path: `/hubs/agreements`
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - [Node.js 22+](https://nodejs.org/) and [pnpm](https://pnpm.io/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for PostgreSQL + MinIO)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for SQL Server + MinIO)
 
 ### Local Development
 
@@ -401,7 +401,7 @@ Hub path: `/hubs/agreements`
 git clone https://github.com/danj210/accordly.git
 cd accordly
 
-# 2. Start infrastructure (PostgreSQL + MinIO)
+# 2. Start infrastructure (SQL Server + MinIO)
 docker compose up -d
 
 # 3. Apply database migrations
@@ -452,7 +452,7 @@ pnpm test:e2e
 
 | Variable | Description | Default |
 |---|---|---|
-| `ConnectionStrings__DefaultConnection` | PostgreSQL connection string | `Host=localhost;Database=accordly;...` |
+| `ConnectionStrings__DefaultConnection` | SQL Server connection string | `Server=localhost,1433;Database=Accordly;...` |
 | `Storage__Endpoint` | S3-compatible endpoint | `http://localhost:9000` |
 | `Storage__Bucket` | Object store bucket name | `accordly` |
 | `Storage__AccessKey` | Object store access key | `minioadmin` |

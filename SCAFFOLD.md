@@ -295,6 +295,10 @@ Check off each item as it is completed and committed.
   - `mailhog`: `mailhog/mailhog:latest`, ports `1025:1025` and `8025:8025`.
   Named volumes: `sqldata`, `miniodata`.
 
+- [x] **8.2 — Root documentation stack alignment**
+  `README.md` describes SQL Server 2022, SQL Server data types and connection strings,
+  and MSTest with `Testcontainers.MsSql` consistently with the implemented stack.
+
 ---
 
 ## Phase 9 — Frontend Bootstrap
