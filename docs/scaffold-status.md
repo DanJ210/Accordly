@@ -10,6 +10,7 @@
 - Contracts records for agreements, versions, signatories, attachments, and auth
 - Application repository/service interfaces
 - Create-agreement command, handler, validator, get-agreement query, and MediatR validation pipeline
+- Create-agreement validator and handler unit tests
 - SQL Server EF Core context and entity configurations
 - Initial EF Core migration, inspected SQL, and verified SQL Server application
 - EF repositories, unit of work, S3-compatible storage, SMTP email, and Hangfire registration
@@ -24,11 +25,11 @@
 - Claim-based owner identity propagation in agreement endpoints
 - Real Identity registration, login, JWT issuance, refresh-token rotation, and logout
 - Agreement status transition rules
-- Unit, integration, E2E, and frontend tests
+- Agreement status, integration, E2E, and frontend tests
 - Full editor route and Tiptap AgreementVersion save workflow
 - Complete agreement detail composition and SignalR-driven UI updates
 - Pagination and agreement creation modal
 
 ## Validation Notes
 
-The initial backend solution build and frontend type check/production build have passed. Keep validation results current in `SCAFFOLD.md`. If `dotnet test` is blocked by a local SDK workload-manifest problem, document the environment error separately from actual test failures.
+The initial backend solution build, the `Accordly.Unit` test project, and the frontend type check/production build have passed. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.

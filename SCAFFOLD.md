@@ -9,7 +9,7 @@ Check off each item as it is completed and committed.
 > **Frontend:** Vue 3 · TypeScript · Pinia · Vue Router 4 · Tailwind CSS v4 · Tiptap v2
 > **Infra:** Docker Compose · MinIO · MailHog
 
-> **Progress note (2026-09-09):** Checked items below are implemented in the working tree but have not been committed. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx` and the frontend type check/production build pass. `dotnet test` is currently blocked by a local .NET workload-manifest resolver error, not by test assertions. Unchecked items are still missing or only partially implemented.
+> **Progress note (2026-09-11):** Checked items below are implemented in the working tree but have not been committed. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, and the frontend type check/production build pass. Unchecked items are still missing or only partially implemented.
 
 ---
 
@@ -257,11 +257,11 @@ Check off each item as it is completed and committed.
   Use `[TestClass]` and `[TestMethod]`. Assert valid and invalid status transitions
   (e.g., cannot move from `Active` back to `Draft`).
 
-- [ ] **7.2 — Unit: CreateAgreementCommandValidator tests**
+- [x] **7.2 — Unit: CreateAgreementCommandValidator tests**
   Create `Application/CreateAgreementCommandValidatorTests.cs`.
   Test: empty title fails, title over 250 chars fails, valid command passes.
 
-- [ ] **7.3 — Unit: CreateAgreementCommandHandler tests**
+- [x] **7.3 — Unit: CreateAgreementCommandHandler tests**
   Create `Application/CreateAgreementCommandHandlerTests.cs`.
   Mock `IAgreementRepository` and `IUnitOfWork` with Moq.
   Assert handler calls `AddAsync` and `SaveChangesAsync` and returns a populated `AgreementResponse`.
