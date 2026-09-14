@@ -1,3 +1,4 @@
+using Accordly.Contracts.Auth;
 using Carter;
 
 namespace Accordly.Api.Modules;
@@ -10,9 +11,9 @@ public sealed class AuthModule : ICarterModule
     {
         var group = app.MapGroup("/api/v1/auth");
 
-        group.MapPost("/register", () => Results.Ok("stub"));
-        group.MapPost("/login", () => Results.Ok("stub"));
-        group.MapPost("/refresh", () => Results.Ok("stub"));
-        group.MapPost("/logout", () => Results.Ok("stub"));
+        group.MapPost("/register", (RegisterRequest request) => Results.Ok("stub"));
+        group.MapPost("/login", (LoginRequest request) => Results.Ok("stub"));
+        group.MapPost("/refresh", (RefreshTokenRequest request) => Results.Ok("stub"));
+        group.MapPost("/logout", (RefreshTokenRequest request) => Results.NoContent());
     }
 }

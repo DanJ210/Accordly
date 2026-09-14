@@ -24,7 +24,8 @@
 ## Still Outstanding
 
 - Claim-based owner identity propagation in agreement endpoints
-- Real Identity registration, login, JWT issuance, refresh-token rotation, and logout
+- Auth phase 6.8 implementation, now split in `SCAFFOLD.md` into contracts, refresh-token persistence,
+  token issuance, Identity setup, register/login, refresh/logout, and focused validation
 - Integration, E2E, and frontend tests
 - Full editor route and Tiptap AgreementVersion save workflow
 - Complete agreement detail composition and SignalR-driven UI updates

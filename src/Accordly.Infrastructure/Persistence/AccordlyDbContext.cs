@@ -23,6 +23,8 @@ public sealed class AccordlyDbContext : IdentityDbContext<ApplicationUser, Micro
     public DbSet<Organization> Organizations => Set<Organization>();
     /// <summary>Gets domain users.</summary>
     public new DbSet<User> Users => Set<User>();
+    /// <summary>Gets persisted refresh tokens.</summary>
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder builder)

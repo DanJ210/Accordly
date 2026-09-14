@@ -55,10 +55,10 @@ Unless marked public, routes require a JWT bearer token. The API uses Carter mod
 
 | Method | Route | Access | Purpose |
 | --- | --- | --- | --- |
-| POST | `/auth/register` | Public | Register an account |
+| POST | `/auth/register` | Public | Register an account and receive an access/refresh token pair |
 | POST | `/auth/login` | Public | Issue an access and refresh token |
-| POST | `/auth/refresh` | Public | Rotate a refresh token |
-| POST | `/auth/logout` | Public or authenticated | Revoke a refresh token |
+| POST | `/auth/refresh` | Public | Rotates a refresh token; request body requires a `refreshToken` string |
+| POST | `/auth/logout` | Public or authenticated | Revoke a refresh token; request body requires a `refreshToken` string |
 
 ## SignalR
 

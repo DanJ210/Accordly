@@ -9,7 +9,7 @@ Check off each item as it is completed and committed.
 > **Frontend:** Vue 3 · TypeScript · Pinia · Vue Router 4 · Tailwind CSS v4 · Tiptap v2
 > **Infra:** Docker Compose · MinIO · MailHog
 
-> **Progress note (2026-09-11):** Checked items below are implemented in the working tree but have not been committed. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, and the frontend type check/production build pass. Unchecked items are still missing or only partially implemented.
+> **Progress note (2026-09-14):** Checked items below are implemented in the working tree but have not been committed. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, and the frontend type check/production build pass. Unchecked items are still missing or only partially implemented. Phase 6.8 has been reviewed and split into dependency-ordered, independently verifiable tasks; its existing JWT and Identity foundation remains partial.
 
 ---
 
@@ -240,13 +240,57 @@ Check off each item as it is completed and committed.
   Each registers routes with the correct HTTP method and path but returns `Results.Ok("stub")`.
   Public routes (`/sign/{token}`, all `/auth/*`) must NOT have `RequireAuthorization()`.
 
-- [ ] **6.8 — Auth module (real implementation)**
-  Implement `AuthModule` fully:
-  - `POST /auth/register` — create Identity user, create `User` domain entity, issue JWT.
-  - `POST /auth/login` — validate credentials via `SignInManager`, issue JWT + refresh token.
-  - `POST /auth/refresh` — validate refresh token, rotate and reissue.
-  - `POST /auth/logout` — revoke refresh token.
-  Create `Services/TokenService.cs` handling JWT generation and refresh token lifecycle.
+- [ ] **6.8a — Auth contracts and endpoint semantics**
+  Add `RefreshTokenRequest` with a required `RefreshToken` value for refresh and logout.
+  Keep `AuthResponse` as the access-token, refresh-token, and access-token-expiry response.
+  Define endpoint behavior before implementation:
+  - `POST /auth/register` returns `201 Created` with `AuthResponse`.
+  - `POST /auth/login` returns `200 OK` with `AuthResponse`.
+  - `POST /auth/refresh` returns `200 OK` with a rotated `AuthResponse`.
+  - `POST /auth/logout` returns `204 No Content`; it is idempotent for an already-revoked token.
+  - Duplicate registration and Identity password failures return `400`; invalid credentials and invalid,
+    expired, or revoked refresh tokens return `401` without revealing which credential failed.
+
+- [ ] **6.8b — Persisted refresh-token model and migration**
+  Add an Identity persistence model tied to `ApplicationUser` with: `Id`, `UserId`, `TokenHash`,
+  `CreatedAt`, `ExpiresAt`, `RevokedAt?`, and `ReplacedByTokenId?`.
+  Store only a SHA-256 hash of each cryptographically random token. Configure required lengths,
+  indexes, foreign keys, and cascade behavior in EF Core. Add and inspect a migration that creates
+  the refresh-token table without changing the domain agreement model.
+
+- [ ] **6.8c — Token service**
+  Create `Services/TokenService.cs` and register it as scoped. Generate signed JWTs from the configured
+  issuer, audience, secret, and expiry. Include stable user-id, email, and display-name claims; use the
+  same user-id claim consumed by authenticated API routes. Generate 256-bit refresh tokens with a
+  separately configured lifetime. Implement persisted issue, validation, single-use rotation, and
+  revocation operations with cancellation-token support.
+
+- [ ] **6.8d — Identity and auth service registration**
+  Complete Identity registration for `UserManager<ApplicationUser>` and `SignInManager<ApplicationUser>`
+  without enabling cookie authentication. Configure unique emails and an explicit password policy.
+  Validate JWT and refresh-token configuration at startup so missing or weak signing secrets fail fast
+  outside the documented local-development setup.
+
+- [ ] **6.8e — Registration and login endpoints**
+  Replace the register and login stubs. Registration creates `ApplicationUser` and the domain `User`
+  with the same Guid and normalized email/display name, and must not leave either record orphaned if the
+  operation fails. Do not generate and discard a private signing key on the server: initialize the current
+  domain `PublicKey` as empty and document key enrollment as separate work unless the registration contract
+  is deliberately extended for a client-generated public key. Login validates the password through Identity
+  without disclosing account existence. Both endpoints issue an access/refresh token pair.
+
+- [ ] **6.8f — Refresh and logout endpoints**
+  Replace the refresh and logout stubs. Refresh atomically revokes the presented token and links it to
+  its replacement before returning a new pair. Logout revokes the presented refresh token; existing
+  access tokens remain valid only until their short expiry. Keep all four `/auth/*` routes public so a
+  caller with an expired access token can still rotate or revoke a refresh token.
+
+- [ ] **6.8g — Auth tests and documentation validation**
+  Add focused tests for JWT claims/expiry, refresh-token hashing, rotation/replay rejection, revocation,
+  duplicate registration, invalid login, and successful register/login/refresh/logout responses.
+  Verify persisted Identity and domain users share an ID. Update `docs/api.md`, `docs/data-model.md`,
+  `docs/architecture.md`, and configuration documentation with the implemented contracts, persistence
+  shape, security behavior, and settings. Run the narrow auth tests, then `dotnet build Accordly.slnx`.
 
 ---
 
