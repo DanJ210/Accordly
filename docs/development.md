@@ -82,11 +82,11 @@ Integration tests require Docker because they use `Testcontainers.MsSql`.
 Migrations belong to `Accordly.Infrastructure` and use `Accordly.Api` as the startup project:
 
 ```powershell
-dotnet ef migrations add InitialCreate --project src/Accordly.Infrastructure --startup-project src/Accordly.Api
+dotnet ef migrations add <MigrationName> --project src/Accordly.Infrastructure --startup-project src/Accordly.Api
 dotnet ef database update --project src/Accordly.Infrastructure --startup-project src/Accordly.Api
 ```
 
-Do not commit generated migrations until the model and resulting SQL have been reviewed.
+Build the startup project before using `--no-build`; otherwise EF can load a stale referenced assembly and produce an incorrect model diff. Add a new migration for persisted model changes rather than rewriting a migration that may already be applied. Review the generated model diff and SQL before treating a migration as validated.
 
 ## Configuration and Secrets
 

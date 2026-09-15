@@ -14,7 +14,9 @@
 - Create-agreement validator and handler unit tests
 - SQL Server EF Core context and entity configurations
 - Initial EF Core migration, inspected SQL, and verified SQL Server application
+- Server-side refresh-token persistence with SHA-256 hashes, lifecycle metadata, indexes, and an additive migration
 - EF repositories, unit of work, S3-compatible storage, SMTP email, and Hangfire registration
+- Scoped token service for configured JWT issuance and cryptographically secure refresh-token creation
 - API composition root with Carter, JWT bearer configuration, Serilog, Swagger, exception middleware, and SignalR hub
 - Separate Carter modules for versions, signatories, attachments, export, auth, and audit, with authorization excluded from public auth and guest-signing routes
 - Docker Compose services for SQL Server, MinIO, and MailHog
@@ -34,4 +36,4 @@
 
 ## Validation Notes
 
-The initial backend solution build, the `Accordly.Unit` test project, and the frontend type check/production build have passed. The API project build also passes after the Carter module separation; current NuGet vulnerability advisories remain as warnings. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.
+The initial backend solution build, the `Accordly.Unit` test project, and the frontend type check/production build have passed. Focused token issuance and refresh-token persistence unit tests also pass. The API project build passes after the Carter module separation; current NuGet vulnerability advisories remain as warnings. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.

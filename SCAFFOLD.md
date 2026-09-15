@@ -2,14 +2,14 @@
 
 Use this file as your build guide. Work through each step sequentially.
 Each step is scoped small enough to paste directly into a coding assistant as a standalone prompt.
-Check off each item as it is completed and committed.
+Check off each item only after it is implemented and validated. Commits are not required for completion.
 
 > **Stack:** .NET 10 · ASP.NET Core Minimal APIs · Carter · EF Core 10 · SQL Server 2022
 > **Test:** MSTest · Moq · Testcontainers.MsSql
 > **Frontend:** Vue 3 · TypeScript · Pinia · Vue Router 4 · Tailwind CSS v4 · Tiptap v2
 > **Infra:** Docker Compose · MinIO · MailHog
 
-> **Progress note (2026-09-14):** Checked items below are implemented in the working tree but have not been committed. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, and the frontend type check/production build pass. Unchecked items are still missing or only partially implemented. Phase 6.8 has been reviewed and split into dependency-ordered, independently verifiable tasks; its existing JWT and Identity foundation remains partial.
+> **Progress note (2026-09-14):** Checked items below are implemented and validated; commit state does not determine completion. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, and the frontend type check/production build pass. Unchecked items are still missing or only partially implemented. Authentication tasks 6.8a-f are implemented; 6.8g remains unchecked pending Docker-backed integration validation.
 
 ---
 
