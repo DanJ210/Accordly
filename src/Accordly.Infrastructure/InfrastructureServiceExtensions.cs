@@ -2,7 +2,6 @@ using Accordly.Application.Common.Interfaces;
 using Accordly.Application.Common.Services;
 using Accordly.Infrastructure.Email;
 using Accordly.Infrastructure.Persistence;
-using Accordly.Infrastructure.Persistence.Repositories;
 using Accordly.Infrastructure.Storage;
 using Hangfire;
 using Hangfire.SqlServer;

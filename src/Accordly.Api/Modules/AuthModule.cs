@@ -22,6 +22,7 @@ public sealed class AuthModule : ICarterModule
             IUnitOfWork unitOfWork,
             TokenService tokenService,
             IConfiguration configuration,
+            IRefreshTokenRepository refreshTokenRepository,
             CancellationToken cancellationToken) =>
         {
             var email = request.Email?.Trim();
@@ -52,17 +53,19 @@ public sealed class AuthModule : ICarterModule
                 return Results.BadRequest(new { errors = createResult.Errors.Select(error => error.Description) });
             }
 
-            var domainUser = new User
+            var domainUser = new User(applicationUser.Id)
             {
-                Id = applicationUser.Id,
                 Email = email,
                 DisplayName = displayName,
                 PublicKey = string.Empty
             };
 
+            var response = CreateAuthResponse(tokenService, configuration, applicationUser);
+
             try
             {
                 await userRepository.AddAsync(domainUser, cancellationToken);
+                await refreshTokenRepository.AddAsync(CreateRefreshTokenRecord(tokenService, configuration, applicationUser.Id, response.RefreshToken), cancellationToken);
                 await unitOfWork.SaveChangesAsync(cancellationToken);
             }
             catch
@@ -71,14 +74,16 @@ public sealed class AuthModule : ICarterModule
                 throw;
             }
 
-            var response = CreateAuthResponse(tokenService, configuration, applicationUser);
             return Results.Created("/api/v1/auth/register", response);
         });
 
         group.MapPost("/login", async (LoginRequest request,
             UserManager<ApplicationUser> userManager,
             TokenService tokenService,
-            IConfiguration configuration) =>
+            IConfiguration configuration,
+            IRefreshTokenRepository refreshTokenRepository,
+            IUnitOfWork unitOfWork,
+            CancellationToken cancellationToken) =>
         {
             var email = request.Email?.Trim();
             var password = request.Password;
@@ -91,16 +96,18 @@ public sealed class AuthModule : ICarterModule
             var user = await userManager.FindByEmailAsync(email);
             if (user is null)
             {
-                return Results.Unauthenticated();
+                return Results.Unauthorized();
             }
 
             var isValid = await userManager.CheckPasswordAsync(user, password);
             if (!isValid)
             {
-                return Results.Unauthenticated();
+                return Results.Unauthorized();
             }
 
             var response = CreateAuthResponse(tokenService, configuration, user);
+            await refreshTokenRepository.AddAsync(CreateRefreshTokenRecord(tokenService, configuration, user.Id, response.RefreshToken), cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return Results.Ok(response);
         });
 
@@ -122,13 +129,13 @@ public sealed class AuthModule : ICarterModule
 
             if (currentToken is null || currentToken.RevokedAt is not null || currentToken.ExpiresAt <= DateTimeOffset.UtcNow)
             {
-                return Results.Unauthenticated();
+                return Results.Unauthorized();
             }
 
             var user = await userManager.FindByIdAsync(currentToken.UserId.ToString());
             if (user is null)
             {
-                return Results.Unauthenticated();
+                return Results.Unauthorized();
             }
 
             var replacementTokenValue = tokenService.CreateRefreshToken();
@@ -187,5 +194,15 @@ public sealed class AuthModule : ICarterModule
         return int.TryParse(configuration["RefreshToken:ExpiryHours"], out var hours) && hours > 0
             ? hours
             : 168;
+    }
+
+    private static RefreshToken CreateRefreshTokenRecord(TokenService tokenService, IConfiguration configuration, Guid userId, string rawToken)
+    {
+        return new RefreshToken
+        {
+            UserId = userId,
+            TokenHash = tokenService.HashToken(rawToken),
+            ExpiresAt = DateTimeOffset.UtcNow.AddHours(GetRefreshExpiryHours(configuration))
+        };
     }
 }
