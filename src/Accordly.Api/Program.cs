@@ -11,6 +11,18 @@ using System.Text;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("logs/accordly-.log", rollingInterval: RollingInterval.Day).CreateLogger();
 var builder = WebApplication.CreateBuilder(args);
+var jwtSecret = builder.Configuration["Jwt:Secret"] ?? throw new InvalidOperationException("Jwt:Secret is required.");
+if (jwtSecret.Length < 32)
+{
+    throw new InvalidOperationException("Jwt:Secret must be at least 32 characters long.");
+}
+
+var refreshExpiryHours = int.TryParse(builder.Configuration["RefreshToken:ExpiryHours"], out var hours) ? hours : 168;
+if (refreshExpiryHours <= 0)
+{
+    throw new InvalidOperationException("RefreshToken:ExpiryHours must be greater than zero.");
+}
+
 builder.Host.UseSerilog();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -20,8 +32,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-	var secret = builder.Configuration["Jwt:Secret"] ?? "CHANGE_ME_TO_A_32_CHAR_MIN_SECRET";
-	options.TokenValidationParameters = new TokenValidationParameters { ValidateIssuer = true, ValidateAudience = true, ValidateLifetime = true, ValidateIssuerSigningKey = true, ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "accordly", ValidAudience = builder.Configuration["Jwt:Audience"] ?? "accordly-client", IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)) };
+	options.TokenValidationParameters = new TokenValidationParameters { ValidateIssuer = true, ValidateAudience = true, ValidateLifetime = true, ValidateIssuerSigningKey = true, ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "accordly", ValidAudience = builder.Configuration["Jwt:Audience"] ?? "accordly-client", IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)) };
 });
 builder.Services.AddAuthorization();
 var app = builder.Build();

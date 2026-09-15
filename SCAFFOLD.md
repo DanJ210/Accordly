@@ -240,7 +240,7 @@ Check off each item as it is completed and committed.
   Each registers routes with the correct HTTP method and path but returns `Results.Ok("stub")`.
   Public routes (`/sign/{token}`, all `/auth/*`) must NOT have `RequireAuthorization()`.
 
-- [ ] **6.8a — Auth contracts and endpoint semantics**
+- [x] **6.8a — Auth contracts and endpoint semantics**
   Add `RefreshTokenRequest` with a required `RefreshToken` value for refresh and logout.
   Keep `AuthResponse` as the access-token, refresh-token, and access-token-expiry response.
   Define endpoint behavior before implementation:
@@ -251,21 +251,21 @@ Check off each item as it is completed and committed.
   - Duplicate registration and Identity password failures return `400`; invalid credentials and invalid,
     expired, or revoked refresh tokens return `401` without revealing which credential failed.
 
-- [ ] **6.8b — Persisted refresh-token model and migration**
+- [x] **6.8b — Persisted refresh-token model and migration**
   Add an Identity persistence model tied to `ApplicationUser` with: `Id`, `UserId`, `TokenHash`,
   `CreatedAt`, `ExpiresAt`, `RevokedAt?`, and `ReplacedByTokenId?`.
   Store only a SHA-256 hash of each cryptographically random token. Configure required lengths,
   indexes, foreign keys, and cascade behavior in EF Core. Add and inspect a migration that creates
   the refresh-token table without changing the domain agreement model.
 
-- [ ] **6.8c — Token service**
+- [x] **6.8c — Token service**
   Create `Services/TokenService.cs` and register it as scoped. Generate signed JWTs from the configured
   issuer, audience, secret, and expiry. Include stable user-id, email, and display-name claims; use the
   same user-id claim consumed by authenticated API routes. Generate 256-bit refresh tokens with a
   separately configured lifetime. Implement persisted issue, validation, single-use rotation, and
   revocation operations with cancellation-token support.
 
-- [ ] **6.8d — Identity and auth service registration**
+- [x] **6.8d — Identity and auth service registration**
   Complete Identity registration for `UserManager<ApplicationUser>` and `SignInManager<ApplicationUser>`
   without enabling cookie authentication. Configure unique emails and an explicit password policy.
   Validate JWT and refresh-token configuration at startup so missing or weak signing secrets fail fast
