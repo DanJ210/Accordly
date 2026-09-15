@@ -271,7 +271,7 @@ Check off each item as it is completed and committed.
   Validate JWT and refresh-token configuration at startup so missing or weak signing secrets fail fast
   outside the documented local-development setup.
 
-- [ ] **6.8e — Registration and login endpoints**
+- [x] **6.8e — Registration and login endpoints**
   Replace the register and login stubs. Registration creates `ApplicationUser` and the domain `User`
   with the same Guid and normalized email/display name, and must not leave either record orphaned if the
   operation fails. Do not generate and discard a private signing key on the server: initialize the current
