@@ -170,7 +170,7 @@ The following areas remain unfinished and must stay visible in `SCAFFOLD.md` unt
 - MediatR validation pipeline behavior
 - Initial EF Core migration
 - Complete route-module separation and correct claim-based identity propagation
-- Real Identity registration/login/JWT/refresh-token lifecycle
+- Docker-backed auth integration validation for the register/login/refresh/logout lifecycle
 - Unit, integration, E2E, and frontend tests
 - Full editor route/page and version-save workflow
 - Complete agreement detail composition, SignalR UI updates, pagination, and create modal

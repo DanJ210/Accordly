@@ -1,9 +1,11 @@
 using Accordly.Application.Common.Interfaces;
+using Accordly.Application.Common.Services;
 using Accordly.Infrastructure.Email;
 using Accordly.Infrastructure.Persistence;
 using Accordly.Infrastructure.Storage;
 using Hangfire;
 using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,9 +20,21 @@ public static class InfrastructureServiceExtensions
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection") ?? "Server=localhost,1433;Database=Accordly;User Id=sa;Password=Accordly_Dev1;TrustServerCertificate=True;";
         services.AddDbContext<AccordlyDbContext>(options => options.UseSqlServer(connectionString));
-        services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<AccordlyDbContext>();
+        services.AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+            })
+            .AddEntityFrameworkStores<AccordlyDbContext>();
+
+        services.AddScoped<TokenService>();
         services.AddScoped<IAgreementRepository, AgreementRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IStorageService, S3StorageService>();
         services.AddSingleton<IEmailService, SmtpEmailService>();

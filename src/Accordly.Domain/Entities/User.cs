@@ -5,6 +5,12 @@ namespace Accordly.Domain.Entities;
 /// <summary>Accordly user profile.</summary>
 public sealed class User : Entity
 {
+    /// <summary>Initializes a user with a generated identifier.</summary>
+    public User() { }
+
+    /// <summary>Initializes a user with an existing identity identifier.</summary>
+    public User(Guid id) => Id = id;
+
     /// <summary>Gets or sets the email address.</summary>
     public string Email { get; set; } = string.Empty;
     /// <summary>Gets or sets the display name.</summary>

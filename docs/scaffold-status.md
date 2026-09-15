@@ -24,7 +24,9 @@
 ## Still Outstanding
 
 - Claim-based owner identity propagation in agreement endpoints
-- Real Identity registration, login, JWT issuance, refresh-token rotation, and logout
+- Auth phase 6.8a-f: contracts, refresh-token persistence, token issuance, Identity setup, register/login,
+  refresh/logout, and persisted token rotation/revocation; 6.8g validation is implemented but requires Docker
+  for its SQL-backed integration test before it can be marked complete
 - Integration, E2E, and frontend tests
 - Full editor route and Tiptap AgreementVersion save workflow
 - Complete agreement detail composition and SignalR-driven UI updates
