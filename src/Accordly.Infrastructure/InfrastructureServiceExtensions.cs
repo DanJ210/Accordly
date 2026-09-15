@@ -2,6 +2,7 @@ using Accordly.Application.Common.Interfaces;
 using Accordly.Application.Common.Services;
 using Accordly.Infrastructure.Email;
 using Accordly.Infrastructure.Persistence;
+using Accordly.Infrastructure.Persistence.Repositories;
 using Accordly.Infrastructure.Storage;
 using Hangfire;
 using Hangfire.SqlServer;
@@ -34,6 +35,7 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<TokenService>();
         services.AddScoped<IAgreementRepository, AgreementRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IStorageService, S3StorageService>();
         services.AddSingleton<IEmailService, SmtpEmailService>();

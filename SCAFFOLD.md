@@ -279,7 +279,7 @@ Check off each item as it is completed and committed.
   is deliberately extended for a client-generated public key. Login validates the password through Identity
   without disclosing account existence. Both endpoints issue an access/refresh token pair.
 
-- [ ] **6.8f — Refresh and logout endpoints**
+- [x] **6.8f — Refresh and logout endpoints**
   Replace the refresh and logout stubs. Refresh atomically revokes the presented token and links it to
   its replacement before returning a new pair. Logout revokes the presented refresh token; existing
   access tokens remain valid only until their short expiry. Keep all four `/auth/*` routes public so a

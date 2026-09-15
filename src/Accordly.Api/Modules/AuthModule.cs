@@ -104,16 +104,88 @@ public sealed class AuthModule : ICarterModule
             return Results.Ok(response);
         });
 
-        group.MapPost("/refresh", (RefreshTokenRequest request) => Results.Ok("stub"));
-        group.MapPost("/logout", (RefreshTokenRequest request) => Results.NoContent());
+        group.MapPost("/refresh", async (RefreshTokenRequest request,
+            UserManager<ApplicationUser> userManager,
+            IRefreshTokenRepository refreshTokenRepository,
+            IUnitOfWork unitOfWork,
+            TokenService tokenService,
+            IConfiguration configuration,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.RefreshToken))
+            {
+                return Results.BadRequest(new { errors = new[] { "Refresh token is required." } });
+            }
+
+            var tokenHash = tokenService.HashToken(request.RefreshToken);
+            var currentToken = await refreshTokenRepository.GetByHashAsync(tokenHash, cancellationToken);
+
+            if (currentToken is null || currentToken.RevokedAt is not null || currentToken.ExpiresAt <= DateTimeOffset.UtcNow)
+            {
+                return Results.Unauthenticated();
+            }
+
+            var user = await userManager.FindByIdAsync(currentToken.UserId.ToString());
+            if (user is null)
+            {
+                return Results.Unauthenticated();
+            }
+
+            var replacementTokenValue = tokenService.CreateRefreshToken();
+            var replacementToken = new RefreshToken
+            {
+                UserId = currentToken.UserId,
+                TokenHash = tokenService.HashToken(replacementTokenValue),
+                ExpiresAt = DateTimeOffset.UtcNow.AddHours(GetRefreshExpiryHours(configuration))
+            };
+
+            currentToken.RevokedAt = DateTimeOffset.UtcNow;
+            currentToken.ReplacedByTokenId = replacementToken.Id;
+
+            await refreshTokenRepository.AddAsync(replacementToken, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var response = CreateAuthResponse(tokenService, configuration, user, replacementTokenValue);
+            return Results.Ok(response);
+        });
+
+        group.MapPost("/logout", async (RefreshTokenRequest request,
+            IRefreshTokenRepository refreshTokenRepository,
+            IUnitOfWork unitOfWork,
+            TokenService tokenService,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.RefreshToken))
+            {
+                return Results.BadRequest(new { errors = new[] { "Refresh token is required." } });
+            }
+
+            var tokenHash = tokenService.HashToken(request.RefreshToken);
+            var token = await refreshTokenRepository.GetByHashAsync(tokenHash, cancellationToken);
+
+            if (token is null || token.RevokedAt is not null)
+            {
+                return Results.NoContent();
+            }
+
+            token.RevokedAt = DateTimeOffset.UtcNow;
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            return Results.NoContent();
+        });
     }
 
-    private static AuthResponse CreateAuthResponse(TokenService tokenService, IConfiguration configuration, ApplicationUser user)
+    private static AuthResponse CreateAuthResponse(TokenService tokenService, IConfiguration configuration, ApplicationUser user, string? refreshToken = null)
     {
         var expiryMinutes = int.TryParse(configuration["Jwt:ExpiryMinutes"], out var minutes) ? minutes : 60;
         var expiresAt = DateTimeOffset.UtcNow.AddMinutes(expiryMinutes);
         var accessToken = tokenService.CreateAccessToken(user.Id, user.Email ?? string.Empty, user.DisplayName);
-        var refreshToken = tokenService.CreateRefreshToken();
-        return new AuthResponse(accessToken, refreshToken, expiresAt);
+        return new AuthResponse(accessToken, refreshToken ?? tokenService.CreateRefreshToken(), expiresAt);
+    }
+
+    private static int GetRefreshExpiryHours(IConfiguration configuration)
+    {
+        return int.TryParse(configuration["RefreshToken:ExpiryHours"], out var hours) && hours > 0
+            ? hours
+            : 168;
     }
 }
