@@ -77,4 +77,7 @@ The ASP.NET Core host. It composes dependency injection, authentication, middlew
 - Attachments are pinned to agreement versions and retain SHA-256 hashes.
 - Audit events are append-only.
 - Identity and authorization decisions use server-side claims and persisted credentials.
+- JWT access tokens are short-lived; refresh credentials are cryptographically random, stored only as
+    SHA-256 hashes, rotated on use, and revoked on logout. Refresh and logout routes remain public so an
+    expired access token does not prevent credential rotation or revocation.
 - Configuration and secrets come from configuration providers or environment variables.

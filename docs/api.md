@@ -60,6 +60,11 @@ Unless marked public, routes require a JWT bearer token. The API uses Carter mod
 | POST | `/auth/refresh` | Public | Rotates a refresh token; request body requires a `refreshToken` string |
 | POST | `/auth/logout` | Public or authenticated | Revoke a refresh token; request body requires a `refreshToken` string |
 
+Registration and login persist only the SHA-256 hash of the returned refresh token. Refresh tokens are
+single-use: a successful refresh revokes the submitted token, records its replacement, and returns a new
+access/refresh pair. Missing, expired, revoked, unknown, or replayed refresh tokens return `401 Unauthorized`.
+Logout returns `204 No Content` and is idempotent for an unknown or already-revoked token.
+
 ## SignalR
 
 The hub is available at `/hubs/agreements`.

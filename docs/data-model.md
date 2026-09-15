@@ -79,6 +79,18 @@ Agreements follow `Draft -> PendingSignatures -> Active`, after which they may t
 
 ASP.NET Core Identity stores authentication users, roles, claims, logins, tokens, and related tables through `ApplicationUser` and `AccordlyDbContext`. The domain `User` record is kept separately for agreement-facing profile data until the identity/domain relationship is completed.
 
+## RefreshToken
+
+Refresh tokens are persisted separately from Identity and never store the raw credential:
+
+- `Id`: Guid primary key
+- `UserId`: required Identity user Guid with cascade delete
+- `TokenHash`: required SHA-256 hash, unique, maximum 128 hexadecimal characters
+- `CreatedAt`: creation timestamp
+- `ExpiresAt`: expiry timestamp
+- `RevokedAt`: optional revocation timestamp
+- `ReplacedByTokenId`: optional replacement token Guid used during rotation
+
 ## Domain Events
 
 The domain defines immutable event records without dispatch logic yet:

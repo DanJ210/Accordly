@@ -96,7 +96,12 @@ Important configuration sections:
 
 - `ConnectionStrings:DefaultConnection`
 - `Jwt`
+- `RefreshToken:ExpiryHours`
 - `Storage`
 - `ServerKey`
 - `Email`
 - `Hangfire`
+
+The JWT signing secret must be at least 32 characters. `RefreshToken:ExpiryHours` controls the persisted
+refresh-token lifetime and must be greater than zero. Register and login create persisted refresh-token
+records; refresh rotates them and logout revokes them.
