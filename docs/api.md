@@ -58,7 +58,7 @@ Unless marked public, routes require a JWT bearer token. The API uses Carter mod
 | POST | `/auth/register` | Public | Register an account and receive an access/refresh token pair |
 | POST | `/auth/login` | Public | Issue an access and refresh token |
 | POST | `/auth/refresh` | Public | Rotates a refresh token; request body requires a `refreshToken` string |
-| POST | `/auth/logout` | Public or authenticated | Revoke a refresh token; request body requires a `refreshToken` string |
+| POST | `/auth/logout` | Public | Revoke a refresh token; request body requires a `refreshToken` string |
 
 Registration and login persist only the SHA-256 hash of the returned refresh token. Refresh tokens are
 single-use: a successful refresh revokes the submitted token, records its replacement, and returns a new

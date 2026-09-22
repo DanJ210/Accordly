@@ -26,9 +26,7 @@
 ## Still Outstanding
 
 - Claim-based owner identity propagation in agreement endpoints
-- Auth phase 6.8a-f: contracts, refresh-token persistence, token issuance, Identity setup, register/login,
-  refresh/logout, and persisted token rotation/revocation; 6.8g validation is implemented but requires Docker
-  for its SQL-backed integration test before it can be marked complete
+- Integration, E2E, and frontend tests beyond the validated auth lifecycle test
 - Integration, E2E, and frontend tests
 - Full editor route and Tiptap AgreementVersion save workflow
 - Complete agreement detail composition and SignalR-driven UI updates
@@ -36,4 +34,4 @@
 
 ## Validation Notes
 
-The initial backend solution build, the `Accordly.Unit` test project, and the frontend type check/production build have passed. Focused token issuance and refresh-token persistence unit tests also pass. The API project build passes after the Carter module separation; current NuGet vulnerability advisories remain as warnings. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.
+The backend solution build, the `Accordly.Unit` test project, the Docker-backed authentication lifecycle integration test, and the frontend type check/production build have passed. The auth integration test validates registration, duplicate registration, invalid login, shared Identity/domain IDs, hashed refresh-token persistence, rotation/replay rejection, and idempotent logout/revocation. The API project build passes after the Carter module separation; current NuGet vulnerability advisories remain as warnings. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.

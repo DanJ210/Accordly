@@ -9,7 +9,7 @@ Check off each item only after it is implemented and validated. Commits are not 
 > **Frontend:** Vue 3 · TypeScript · Pinia · Vue Router 4 · Tailwind CSS v4 · Tiptap v2
 > **Infra:** Docker Compose · MinIO · MailHog
 
-> **Progress note (2026-09-14):** Checked items below are implemented and validated; commit state does not determine completion. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, and the frontend type check/production build pass. Unchecked items are still missing or only partially implemented. Authentication tasks 6.8a-f are implemented; 6.8g remains unchecked pending Docker-backed integration validation.
+> **Progress note (2026-09-22):** Checked items below are implemented and validated; commit state does not determine completion. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, the Docker-backed auth lifecycle integration test, and the frontend type check/production build pass. Unchecked items are still missing or only partially implemented.
 
 ---
 
@@ -285,7 +285,7 @@ Check off each item only after it is implemented and validated. Commits are not 
   access tokens remain valid only until their short expiry. Keep all four `/auth/*` routes public so a
   caller with an expired access token can still rotate or revoke a refresh token.
 
-- [ ] **6.8g — Auth tests and documentation validation**
+- [x] **6.8g — Auth tests and documentation validation**
   Add focused tests for JWT claims/expiry, refresh-token hashing, rotation/replay rejection, revocation,
   duplicate registration, invalid login, and successful register/login/refresh/logout responses.
   Verify persisted Identity and domain users share an ID. Update `docs/api.md`, `docs/data-model.md`,

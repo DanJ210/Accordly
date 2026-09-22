@@ -7,7 +7,7 @@ All persisted domain entities use Guid identifiers and UTC `DateTimeOffset` time
 - `Id`: Guid primary key
 - `Email`: up to 320 characters
 - `DisplayName`: up to 100 characters
-- `PublicKey`: base64 Ed25519 public key
+- `PublicKey`: base64 Ed25519 public key; currently initialized as empty during registration until client key enrollment is implemented
 - `OrganizationId`: optional Guid
 
 ## Organization
@@ -77,7 +77,7 @@ Agreements follow `Draft -> PendingSignatures -> Active`, after which they may t
 
 ## Identity
 
-ASP.NET Core Identity stores authentication users, roles, claims, logins, tokens, and related tables through `ApplicationUser` and `AccordlyDbContext`. The domain `User` record is kept separately for agreement-facing profile data until the identity/domain relationship is completed.
+ASP.NET Core Identity stores authentication users, roles, claims, logins, tokens, and related tables through `ApplicationUser` and `AccordlyDbContext`. The domain `User` remains a separate agreement-facing profile record, but registration creates it with the same Guid as its corresponding `ApplicationUser`.
 
 ## RefreshToken
 
