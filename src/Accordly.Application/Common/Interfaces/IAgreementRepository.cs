@@ -15,12 +15,24 @@ public interface IAgreementRepository
     Task<IReadOnlyList<AgreementVersion>> GetVersionsForAgreementAsync(Guid agreementId, CancellationToken cancellationToken = default);
     /// <summary>Gets the next immutable version number for an agreement.</summary>
     Task<int> GetNextVersionNumberAsync(Guid agreementId, CancellationToken cancellationToken = default);
+    /// <summary>Gets all signatories for an agreement.</summary>
+    Task<IReadOnlyList<Signatory>> GetSignatoriesForAgreementAsync(Guid agreementId, CancellationToken cancellationToken = default);
+    /// <summary>Gets a single signatory for an agreement.</summary>
+    Task<Signatory?> GetSignatoryAsync(Guid agreementId, Guid signatoryId, CancellationToken cancellationToken = default);
+    /// <summary>Gets a signatory by its hashed invite token.</summary>
+    Task<Signatory?> GetSignatoryByTokenHashAsync(string tokenHash, CancellationToken cancellationToken = default);
     /// <summary>Adds an agreement.</summary>
     Task AddAsync(Agreement agreement, CancellationToken cancellationToken = default);
     /// <summary>Adds a new agreement version.</summary>
     Task AddVersionAsync(AgreementVersion version, CancellationToken cancellationToken = default);
+    /// <summary>Adds a signatory.</summary>
+    Task AddSignatoryAsync(Signatory signatory, CancellationToken cancellationToken = default);
     /// <summary>Updates an agreement.</summary>
     Task UpdateAsync(Agreement agreement, CancellationToken cancellationToken = default);
+    /// <summary>Updates a signatory.</summary>
+    Task UpdateSignatoryAsync(Signatory signatory, CancellationToken cancellationToken = default);
     /// <summary>Deletes an agreement.</summary>
     Task DeleteAsync(Agreement agreement, CancellationToken cancellationToken = default);
+    /// <summary>Deletes a signatory.</summary>
+    Task DeleteSignatoryAsync(Signatory signatory, CancellationToken cancellationToken = default);
 }

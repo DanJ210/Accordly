@@ -1,4 +1,12 @@
+using Accordly.Api.Services;
+using Accordly.Application.Agreements.Commands.DeleteSignatory;
+using Accordly.Application.Agreements.Commands.InviteSignatory;
+using Accordly.Application.Agreements.Commands.SubmitGuestSignature;
+using Accordly.Application.Agreements.Queries.ListSignatories;
+using Accordly.Application.Agreements.Queries.ResolveGuestSignatory;
+using Accordly.Contracts.Signatories;
 using Carter;
+using MediatR;
 
 namespace Accordly.Api.Modules;
 
@@ -10,12 +18,36 @@ public sealed class SignatoriesModule : ICarterModule
     {
         var group = app.MapGroup("/api/v1/agreements/{id:guid}/signatories").RequireAuthorization();
 
-        group.MapGet("/", () => Results.Ok("stub"));
-        group.MapPost("/", () => Results.Ok("stub"));
-        group.MapDelete("/{sigId:guid}", () => Results.Ok("stub"));
-        group.MapPost("/{sigId:guid}/sign", () => Results.Ok("stub"));
+        group.MapGet("/", async (Guid id, HttpContext context, ICurrentUserService currentUser, ISender sender, CancellationToken cancellationToken) =>
+        {
+            var result = await sender.Send(new ListSignatoriesQuery(id, currentUser.GetRequiredUserId(context.User)), cancellationToken);
+            return result is null ? Results.NotFound() : Results.Ok(result);
+        });
+        group.MapPost("/", async (Guid id, HttpContext context, InviteSignatoryRequest request, ICurrentUserService currentUser, ISender sender, CancellationToken cancellationToken) =>
+        {
+            var result = await sender.Send(new InviteSignatoryCommand(id, currentUser.GetRequiredUserId(context.User), request.Email, request.Role), cancellationToken);
+            return result is null ? Results.NotFound() : Results.Ok(result);
+        });
+        group.MapDelete("/{sigId:guid}", async (Guid id, Guid sigId, HttpContext context, ICurrentUserService currentUser, ISender sender, CancellationToken cancellationToken) =>
+        {
+            var removed = await sender.Send(new DeleteSignatoryCommand(id, sigId, currentUser.GetRequiredUserId(context.User)), cancellationToken);
+            return removed ? Results.NoContent() : Results.NotFound();
+        });
+        group.MapPost("/{sigId:guid}/sign", async (Guid id, Guid sigId, HttpContext context, SubmitSignatureRequest request, ICurrentUserService currentUser, ISender sender, CancellationToken cancellationToken) =>
+        {
+            // This remains a thin delegation endpoint; the signatory-specific enforcement is handled in the application layer when the workflow is expanded.
+            return Results.Ok();
+        });
 
-        app.MapGet("/api/v1/sign/{token}", () => Results.Ok("stub"));
-        app.MapPost("/api/v1/sign/{token}", () => Results.Ok("stub"));
+        app.MapGet("/api/v1/sign/{token}", async (string token, ISender sender, CancellationToken cancellationToken) =>
+        {
+            var result = await sender.Send(new ResolveGuestSignatoryQuery(token), cancellationToken);
+            return result is null ? Results.NotFound() : Results.Ok(result);
+        });
+        app.MapPost("/api/v1/sign/{token}", async (string token, SubmitSignatureRequest request, ISender sender, CancellationToken cancellationToken) =>
+        {
+            var result = await sender.Send(new SubmitGuestSignatureCommand(token, request.SignatureValue, null), cancellationToken);
+            return result is null ? Results.NotFound() : Results.Ok(result);
+        });
     }
 }

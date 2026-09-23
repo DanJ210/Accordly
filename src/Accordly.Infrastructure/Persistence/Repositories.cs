@@ -36,13 +36,31 @@ public sealed class AgreementRepository(AccordlyDbContext db) : IAgreementReposi
         return (latestVersionNumber ?? 0) + 1;
     }
     /// <inheritdoc />
+    public Task<IReadOnlyList<Signatory>> GetSignatoriesForAgreementAsync(Guid agreementId, CancellationToken cancellationToken = default) => db.Signatories
+        .Where(signatory => signatory.AgreementId == agreementId)
+        .OrderBy(signatory => signatory.Email)
+        .ToListAsync(cancellationToken)
+        .ContinueWith(task => (IReadOnlyList<Signatory>)task.Result, cancellationToken);
+    /// <inheritdoc />
+    public Task<Signatory?> GetSignatoryAsync(Guid agreementId, Guid signatoryId, CancellationToken cancellationToken = default) => db.Signatories
+        .FirstOrDefaultAsync(signatory => signatory.AgreementId == agreementId && signatory.Id == signatoryId, cancellationToken);
+    /// <inheritdoc />
+    public Task<Signatory?> GetSignatoryByTokenHashAsync(string tokenHash, CancellationToken cancellationToken = default) => db.Signatories
+        .FirstOrDefaultAsync(signatory => signatory.InviteToken == tokenHash, cancellationToken);
+    /// <inheritdoc />
     public async Task AddAsync(Agreement agreement, CancellationToken cancellationToken = default) => await db.Agreements.AddAsync(agreement, cancellationToken);
     /// <inheritdoc />
     public async Task AddVersionAsync(AgreementVersion version, CancellationToken cancellationToken = default) => await db.AgreementVersions.AddAsync(version, cancellationToken);
     /// <inheritdoc />
+    public async Task AddSignatoryAsync(Signatory signatory, CancellationToken cancellationToken = default) => await db.Signatories.AddAsync(signatory, cancellationToken);
+    /// <inheritdoc />
     public Task UpdateAsync(Agreement agreement, CancellationToken cancellationToken = default) { db.Agreements.Update(agreement); return Task.CompletedTask; }
     /// <inheritdoc />
+    public Task UpdateSignatoryAsync(Signatory signatory, CancellationToken cancellationToken = default) { db.Signatories.Update(signatory); return Task.CompletedTask; }
+    /// <inheritdoc />
     public Task DeleteAsync(Agreement agreement, CancellationToken cancellationToken = default) { db.Agreements.Remove(agreement); return Task.CompletedTask; }
+    /// <inheritdoc />
+    public Task DeleteSignatoryAsync(Signatory signatory, CancellationToken cancellationToken = default) { db.Signatories.Remove(signatory); return Task.CompletedTask; }
 }
 
 /// <summary>EF Core domain user repository.</summary>

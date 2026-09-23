@@ -20,6 +20,8 @@
 	`CurrentVersionId` updates, and documented event creation
 - Version read/list query support with agreement-scoped access checks and matching version-to-agreement validation
 - Version diff endpoint with authorized same-agreement validation and transport-safe diff payloads
+- Signatory management and guest-signing lifecycle with hashed invite-token persistence, list/invite/delete flows,
+  and single-use guest signature recording validated by focused unit tests
 - Create-agreement validator and handler unit tests
 - SQL Server EF Core context and entity configurations
 - Initial EF Core migration, inspected SQL, and verified SQL Server application

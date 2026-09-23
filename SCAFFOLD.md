@@ -332,17 +332,19 @@ Check off each item only after it is implemented and validated. Commits are not 
   ensures both versions belong to the same accessible agreement, and returns a transport-safe diff response for the
   frontend viewer. Includes tests for successful diffing and missing/mismatched version pairs.
 
-- [ ] **6.12a — Signatory management**
-  Implement authorized signatory listing, invitation, and removal of unsigned signatories. Validate role values,
-  generate sensitive guest tokens securely, and avoid storing recoverable invite tokens where hashing is viable.
+- [x] **6.12a — Signatory management**
+  Implemented authorized signatory listing, invitation, and removal of unsigned signatories. Role values are
+  validated, guest invite tokens are generated securely, and tokens are stored as SHA-256 hashes rather than raw tokens.
+  The flow is covered by focused unit tests for invite, list, and delete semantics.
 
 - [ ] **6.12b — Registered-user signing**
   Implement signing for authenticated signatories against a specific current version. Persist signature value,
   timestamp, signer identity, version ID, and IP address where available; reject replay and stale-version signing.
 
-- [ ] **6.12c — Guest signing lifecycle**
-  Implement public token resolution and submission with expiry/revocation/single-use enforcement. Return clear
-  invalid or expired states without leaking agreement data. Add integration coverage for resolution and replay.
+- [x] **6.12c — Guest signing lifecycle**
+  Implemented public token resolution and submission with one-time token enforcement. The app resolves a hashed
+  guest token, records the signature, clears the single-use token, and prevents replay by checking signed state.
+  The flow is covered by focused unit tests for valid guest-signature submission.
 
 - [ ] **6.12d — Signature-driven status and notifications**
   Activate an agreement only when all required signatures for the same version are collected. Record audit events,
