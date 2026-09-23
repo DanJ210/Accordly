@@ -27,8 +27,9 @@
 
 ## Still Outstanding
 
-- Agreement authorization policy and real agreement CRUD remain outstanding; current agreement handlers still
-	need shared owner/participant access rules, but agreement route identity now comes only from authenticated claims
+- Agreement authorization is partially implemented through a shared application policy: owners and collaborators
+	may mutate, owners/collaborators/signers/viewers may read, and unauthorized detail reads are non-disclosing;
+	mutation handlers and full CRUD remain outstanding
 - Real agreement CRUD, immutable version workflows/diff, signatory and guest signing, attachment persistence, exports, audit recording/querying, and authorized SignalR publication behind the existing route-module shells
 - Agreement integration coverage beyond the validated auth lifecycle test, followed by real Playwright E2E infrastructure
 - Frontend Vitest setup and behavioral coverage for API interception, auth state, routing, and agreement workflows

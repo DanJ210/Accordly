@@ -32,6 +32,7 @@ public static class InfrastructureServiceExtensions
             .AddEntityFrameworkStores<AccordlyDbContext>();
 
         services.AddScoped<TokenService>();
+        services.AddScoped<IAgreementAuthorizationService, AgreementAuthorizationService>();
         services.AddScoped<IAgreementRepository, AgreementRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

@@ -79,6 +79,9 @@ The ASP.NET Core host. It composes dependency injection, authentication, middlew
 - Identity and authorization decisions use server-side claims and persisted credentials. API agreement routes
     resolve the acting user through `ICurrentUserService` from the JWT `NameIdentifier` claim; missing, malformed,
     empty, or unauthenticated claims are rejected with `401 Unauthorized`.
+- Agreement access decisions are centralized in the application authorization service. Owners and collaborators may
+    mutate agreements; owners, collaborators, signers, and viewers may read them. Missing and unauthorized detail
+    reads return the same non-disclosing result, while mutation checks are consumed as mutation handlers are added.
 - JWT access tokens are short-lived; refresh credentials are cryptographically random, stored only as
     SHA-256 hashes, rotated on use, and revoked on logout. Refresh and logout routes remain public so an
     expired access token does not prevent credential rotation or revocation.

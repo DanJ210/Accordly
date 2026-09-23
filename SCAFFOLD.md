@@ -298,7 +298,7 @@ Check off each item only after it is implemented and validated. Commits are not 
   owner IDs, and request-controlled user IDs from authorization and ownership decisions. Implemented with
   `ICurrentUserService`, `401 Unauthorized` handling, agreement route propagation, and focused unit tests.
 
-- [ ] **6.9b — Agreement authorization policy**
+- [ ] **6.9b — Agreement authorization policy** *(partial: shared policy and detail-read enforcement implemented; mutation enforcement awaits mutation handlers)*
   Define owner, collaborator, signer, and viewer access for agreement reads and mutations. Enforce the policy
   in application handlers or a shared authorization service rather than duplicating it in Carter lambdas.
   Return a non-disclosing response for users who cannot access an agreement.

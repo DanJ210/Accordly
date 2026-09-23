@@ -8,6 +8,10 @@ Authenticated agreement routes resolve the acting user from the JWT `NameIdentif
 `TokenService`. Missing, malformed, empty, or unauthenticated identity claims return `401 Unauthorized`;
 client-supplied owner or user identifiers are not used for ownership decisions.
 
+Agreement detail reads use the persisted membership policy: owners, collaborators, signers, and viewers may read;
+owners and collaborators may mutate. Missing and unauthorized agreement details are returned as the same `404 Not Found`
+result. Mutation endpoints remain stubs until their application handlers are implemented.
+
 ## Agreements
 
 | Method | Route | Access | Purpose |
