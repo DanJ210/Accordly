@@ -303,9 +303,11 @@ Check off each item only after it is implemented and validated. Commits are not 
   in application handlers or a shared authorization service rather than duplicating it in Carter lambdas.
   Return a non-disclosing response for users who cannot access an agreement.
 
-- [ ] **6.10a — Agreement list and detail queries**
+- [x] **6.10a — Agreement list and detail queries**
   Implement authenticated agreement listing and detail retrieval. Scope list results to agreements visible
   to the acting user, map entities to Contracts, and include the current-version data required by the detail UI.
+  The list query scopes owners and registered collaborator, signer, and viewer memberships; detail reads return
+  the current immutable version when present. Focused query-handler tests pass.
 
 - [ ] **6.10b — Agreement creation**
   Create agreements with the authenticated user as owner, return `201 Created` with a resource-specific

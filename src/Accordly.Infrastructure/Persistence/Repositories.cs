@@ -1,5 +1,6 @@
 using Accordly.Application.Common.Interfaces;
 using Accordly.Domain.Entities;
+using Accordly.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Accordly.Infrastructure.Persistence;
@@ -10,7 +11,15 @@ public sealed class AgreementRepository(AccordlyDbContext db) : IAgreementReposi
     /// <inheritdoc />
     public Task<Agreement?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) => db.Agreements.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
     /// <inheritdoc />
-    public async Task<IReadOnlyList<Agreement>> GetAllForUserAsync(Guid userId, CancellationToken cancellationToken = default) => await db.Agreements.Where(item => item.OwnerId == userId).ToListAsync(cancellationToken);
+    public async Task<IReadOnlyList<Agreement>> GetAllForUserAsync(Guid userId, CancellationToken cancellationToken = default) => await db.Agreements
+        .Where(agreement => agreement.OwnerId == userId || db.Signatories.Any(signatory =>
+            signatory.AgreementId == agreement.Id && signatory.UserId == userId &&
+            (signatory.Role == SignatoryRole.Collaborator || signatory.Role == SignatoryRole.Signer || signatory.Role == SignatoryRole.Viewer)))
+        .OrderByDescending(agreement => agreement.UpdatedAt)
+        .ToListAsync(cancellationToken);
+    /// <inheritdoc />
+    public Task<AgreementVersion?> GetVersionAsync(Guid agreementId, Guid versionId, CancellationToken cancellationToken = default) => db.AgreementVersions
+        .FirstOrDefaultAsync(version => version.AgreementId == agreementId && version.Id == versionId, cancellationToken);
     /// <inheritdoc />
     public async Task AddAsync(Agreement agreement, CancellationToken cancellationToken = default) => await db.Agreements.AddAsync(agreement, cancellationToken);
     /// <inheritdoc />

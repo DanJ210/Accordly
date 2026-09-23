@@ -7,8 +7,10 @@ public interface IAgreementRepository
 {
     /// <summary>Gets an agreement by identifier.</summary>
     Task<Agreement?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    /// <summary>Gets agreements owned by a user.</summary>
+    /// <summary>Gets agreements visible to a user.</summary>
     Task<IReadOnlyList<Agreement>> GetAllForUserAsync(Guid userId, CancellationToken cancellationToken = default);
+    /// <summary>Gets the current version for an agreement.</summary>
+    Task<AgreementVersion?> GetVersionAsync(Guid agreementId, Guid versionId, CancellationToken cancellationToken = default);
     /// <summary>Adds an agreement.</summary>
     Task AddAsync(Agreement agreement, CancellationToken cancellationToken = default);
     /// <summary>Updates an agreement.</summary>

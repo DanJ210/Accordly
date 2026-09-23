@@ -11,6 +11,7 @@
 - Contracts records for agreements, versions, signatories, attachments, and auth
 - Application repository/service interfaces
 - Create-agreement command, handler, validator, get-agreement query, and MediatR validation pipeline
+- Authenticated agreement list and detail queries, including visible-membership scoping and current-version mapping
 - Create-agreement validator and handler unit tests
 - SQL Server EF Core context and entity configurations
 - Initial EF Core migration, inspected SQL, and verified SQL Server application
@@ -34,10 +35,10 @@
 - Agreement integration coverage beyond the validated auth lifecycle test, followed by real Playwright E2E infrastructure
 - Frontend Vitest setup and behavioral coverage for API interception, auth state, routing, and agreement workflows
 - Agreement editor route, Tiptap editor, and validated AgreementVersion save workflow
-- Complete agreement list/detail presentation, child-data composition, and SignalR-driven reconciliation
+- Complete agreement detail presentation, child-data composition, and SignalR-driven reconciliation
 - Dashboard recent agreements, pagination, and accessible agreement creation modal
 - Working guest signature submission and attachment multipart upload; the current components are presentation-only shells
 
 ## Validation Notes
 
-The backend solution build, the `Accordly.Unit` test project, the Docker-backed authentication lifecycle integration test, and the frontend type check/production build have passed. The auth integration test validates registration, duplicate registration, invalid login, shared Identity/domain IDs, hashed refresh-token persistence, rotation/replay rejection, and idempotent logout/revocation. The API project build passes after the Carter module separation; current NuGet vulnerability advisories remain as warnings. Existing non-auth route modules and frontend page/feature shells must not be treated as complete behavior until their focused checklist items and tests pass. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.
+The backend solution build, the `Accordly.Unit` test project, the Docker-backed authentication lifecycle integration test, and the frontend type check/production build have passed. The auth integration test validates registration, duplicate registration, invalid login, shared Identity/domain IDs, hashed refresh-token persistence, rotation/replay rejection, and idempotent logout/revocation. The agreement list/detail query slice is covered by focused unit tests and the API project builds after the route correction; current NuGet vulnerability advisories remain as warnings. Existing non-auth route modules and frontend page/feature shells must not be treated as complete behavior until their focused checklist items and tests pass. Keep validation results current in `SCAFFOLD.md`. Document environment errors separately from actual test failures.
