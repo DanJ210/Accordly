@@ -309,9 +309,10 @@ Check off each item only after it is implemented and validated. Commits are not 
   The list query scopes owners and registered collaborator, signer, and viewer memberships; detail reads return
   the current immutable version when present. Focused query-handler tests pass.
 
-- [ ] **6.10b — Agreement creation**
+- [x] **6.10b — Agreement creation**
   Create agreements with the authenticated user as owner, return `201 Created` with a resource-specific
-  `Location`, and persist an owner signatory or equivalent membership record when required by the access model.
+  `Location`, and preserve owner access through the agreement's owner membership (`OwnerId`). The command,
+  validator, handler, and focused unit tests are implemented and passing.
 
 - [ ] **6.10c — Agreement update and deletion**
   Replace the PATCH and DELETE stubs with validated title, expiry, and lifecycle changes plus owner-only deletion.
