@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Accordly.Application.Common.Interfaces;
 using Accordly.Contracts.Signatories;
+using Accordly.Domain.Enums;
 using MediatR;
 
 namespace Accordly.Application.Agreements.Commands.SubmitGuestSignature;
@@ -38,6 +39,22 @@ public sealed class SubmitGuestSignatureCommandHandler : IRequestHandler<SubmitG
         signatory.InviteToken = null;
 
         await agreementRepository.UpdateSignatoryAsync(signatory, cancellationToken);
+
+        var allSignatories = await agreementRepository.GetSignatoriesForAgreementAsync(agreement.Id, cancellationToken);
+        if (allSignatories is not null &&
+            allSignatories.Any(candidate => candidate.Role == SignatoryRole.Signer) &&
+            allSignatories.Where(candidate => candidate.Role == SignatoryRole.Signer).All(candidate => candidate.SignedAt is not null) &&
+            agreement.Status != Accordly.Domain.Enums.AgreementStatus.Active)
+        {
+            if (agreement.Status == Accordly.Domain.Enums.AgreementStatus.Draft)
+            {
+                agreement.TransitionTo(Accordly.Domain.Enums.AgreementStatus.PendingSignatures);
+            }
+
+            agreement.TransitionTo(Accordly.Domain.Enums.AgreementStatus.Active);
+            await agreementRepository.UpdateAsync(agreement, cancellationToken);
+        }
+
         return new SignatoryResponse(signatory.Id, signatory.Email, signatory.Role.ToString(), signatory.SignedAt);
     }
 }

@@ -347,7 +347,7 @@ Check off each item only after it is implemented and validated. Commits are not 
   guest token, records the signature, clears the single-use token, and prevents replay by checking signed state.
   The flow is covered by focused unit tests for valid guest-signature submission.
 
-- [ ] **6.12d — Signature-driven status and notifications**
+- [ ] **6.12d — Signature-driven status and notifications** *(partial implementation: the agreement now activates when all required signer records for the current version are signed; audit, SignalR, and notification email remain outstanding)*
   Activate an agreement only when all required signatures for the same version are collected. Record audit events,
   publish `SignatoryUpdated` and `AgreementStatusChanged`, and send configured notification email where applicable.
 

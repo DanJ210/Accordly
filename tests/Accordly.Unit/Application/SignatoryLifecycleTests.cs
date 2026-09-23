@@ -140,6 +140,34 @@ public sealed class SignatoryLifecycleTests
     }
 
     [TestMethod]
+    public async Task SubmitGuestSignature_WhenFinalRequiredSignatureIsRecorded_ActivatesAgreement()
+    {
+        var agreementId = Guid.NewGuid();
+        var currentVersionId = Guid.NewGuid();
+        var agreement = new Agreement { Title = "Review", OwnerId = Guid.NewGuid() };
+        SetEntityId(agreement, agreementId);
+        agreement.CurrentVersionId = currentVersionId;
+        agreement.TransitionTo(AgreementStatus.PendingSignatures);
+
+        var first = new Signatory { AgreementId = agreementId, Email = "first@example.com", Role = SignatoryRole.Signer, SignedAt = DateTimeOffset.UtcNow, VersionSignedId = currentVersionId };
+        var second = new Signatory { AgreementId = agreementId, Email = "second@example.com", Role = SignatoryRole.Signer, InviteToken = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("guest-token-123"))) };
+        SetEntityId(first, Guid.NewGuid());
+        SetEntityId(second, Guid.NewGuid());
+
+        var repository = new Mock<IAgreementRepository>();
+        repository.Setup(service => service.GetSignatoryByTokenHashAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(second);
+        repository.Setup(service => service.GetByIdAsync(agreementId, It.IsAny<CancellationToken>())).ReturnsAsync(agreement);
+        repository.Setup(service => service.GetSignatoriesForAgreementAsync(agreementId, It.IsAny<CancellationToken>())).ReturnsAsync(new[] { first, second });
+
+        var handler = new SubmitGuestSignatureCommandHandler(repository.Object);
+
+        await handler.Handle(new SubmitGuestSignatureCommand("guest-token-123", "signature-value", "127.0.0.1"), CancellationToken.None);
+
+        Assert.AreEqual(AgreementStatus.Active, agreement.Status);
+        repository.Verify(service => service.UpdateAsync(agreement, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
     public async Task DeleteUnsignedSignatory_WithOwnerUser_DeletesRecord()
     {
         var agreementId = Guid.NewGuid();
