@@ -11,6 +11,8 @@ public interface IAgreementRepository
     Task<IReadOnlyList<Agreement>> GetAllForUserAsync(Guid userId, CancellationToken cancellationToken = default);
     /// <summary>Gets the current version for an agreement.</summary>
     Task<AgreementVersion?> GetVersionAsync(Guid agreementId, Guid versionId, CancellationToken cancellationToken = default);
+    /// <summary>Gets all versions for an agreement, ordered by version number.</summary>
+    Task<IReadOnlyList<AgreementVersion>> GetVersionsForAgreementAsync(Guid agreementId, CancellationToken cancellationToken = default);
     /// <summary>Gets the next immutable version number for an agreement.</summary>
     Task<int> GetNextVersionNumberAsync(Guid agreementId, CancellationToken cancellationToken = default);
     /// <summary>Adds an agreement.</summary>

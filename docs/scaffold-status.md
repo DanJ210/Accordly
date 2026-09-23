@@ -18,6 +18,7 @@
 	owner-only DELETE handling, and focused command/validator tests; audit-event recording remains outstanding
 - Version-creation workflow with transactional `AgreementVersion` creation, per-agreement number assignment,
 	`CurrentVersionId` updates, and documented event creation
+- Version read/list query support with agreement-scoped access checks and matching version-to-agreement validation
 - Create-agreement validator and handler unit tests
 - SQL Server EF Core context and entity configurations
 - Initial EF Core migration, inspected SQL, and verified SQL Server application

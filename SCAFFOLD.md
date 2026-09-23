@@ -323,9 +323,9 @@ Check off each item only after it is implemented and validated. Commits are not 
   Added repository/application support for creating the next immutable `AgreementVersion` transactionally,
   assigning its per-agreement version number, setting `CurrentVersionId`, and creating the documented event.
 
-- [ ] **6.11b — Version read and list endpoints**
-  Implement authorized version listing and retrieval with Contract responses. Ensure version and agreement IDs
-  are matched so a version cannot be read through a different agreement route.
+- [x] **6.11b — Version read and list endpoints**
+  Implemented authorized version listing and retrieval with Contract responses. The handlers verify access and
+  match the version to the agreement ID so a version cannot be read through a different agreement route.
 
 - [ ] **6.11c — Version diff endpoint**
   Validate `from` and `to`, load two versions from the same accessible agreement, and return a transport-safe
