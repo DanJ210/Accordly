@@ -292,6 +292,92 @@ Check off each item only after it is implemented and validated. Commits are not 
   `docs/architecture.md`, and configuration documentation with the implemented contracts, persistence
   shape, security behavior, and settings. Run the narrow auth tests, then `dotnet build Accordly.slnx`.
 
+- [ ] **6.9a — Authenticated user identity resolution**
+  Add one API-owned helper or service that extracts the stable user ID emitted by `TokenService` from
+  authenticated claims. Reject a missing or malformed claim consistently. Remove `Guid.Empty`, query-string
+  owner IDs, and request-controlled user IDs from authorization and ownership decisions.
+
+- [ ] **6.9b — Agreement authorization policy**
+  Define owner, collaborator, signer, and viewer access for agreement reads and mutations. Enforce the policy
+  in application handlers or a shared authorization service rather than duplicating it in Carter lambdas.
+  Return a non-disclosing response for users who cannot access an agreement.
+
+- [ ] **6.10a — Agreement list and detail queries**
+  Implement authenticated agreement listing and detail retrieval. Scope list results to agreements visible
+  to the acting user, map entities to Contracts, and include the current-version data required by the detail UI.
+
+- [ ] **6.10b — Agreement creation**
+  Create agreements with the authenticated user as owner, return `201 Created` with a resource-specific
+  `Location`, and persist an owner signatory or equivalent membership record when required by the access model.
+
+- [ ] **6.10c — Agreement update and deletion**
+  Replace the PATCH and DELETE stubs with validated title, expiry, and lifecycle changes plus owner-only deletion.
+  Preserve status-transition rules, version immutability, and auditability. Add focused unit tests.
+
+- [ ] **6.11a — Version creation workflow**
+  Add repository/application support for creating the next immutable `AgreementVersion` transactionally,
+  assigning its per-agreement version number, setting `CurrentVersionId`, and publishing the documented event.
+
+- [ ] **6.11b — Version read and list endpoints**
+  Implement authorized version listing and retrieval with Contract responses. Ensure version and agreement IDs
+  are matched so a version cannot be read through a different agreement route.
+
+- [ ] **6.11c — Version diff endpoint**
+  Validate `from` and `to`, load two versions from the same accessible agreement, and return a transport-safe
+  diff response suitable for the frontend viewer. Add tests for missing and mismatched versions.
+
+- [ ] **6.12a — Signatory management**
+  Implement authorized signatory listing, invitation, and removal of unsigned signatories. Validate role values,
+  generate sensitive guest tokens securely, and avoid storing recoverable invite tokens where hashing is viable.
+
+- [ ] **6.12b — Registered-user signing**
+  Implement signing for authenticated signatories against a specific current version. Persist signature value,
+  timestamp, signer identity, version ID, and IP address where available; reject replay and stale-version signing.
+
+- [ ] **6.12c — Guest signing lifecycle**
+  Implement public token resolution and submission with expiry/revocation/single-use enforcement. Return clear
+  invalid or expired states without leaking agreement data. Add integration coverage for resolution and replay.
+
+- [ ] **6.12d — Signature-driven status and notifications**
+  Activate an agreement only when all required signatures for the same version are collected. Record audit events,
+  publish `SignatoryUpdated` and `AgreementStatusChanged`, and send configured notification email where applicable.
+
+- [ ] **6.13a — Attachment upload and integrity**
+  Implement authorized multipart upload for a specific agreement version. Stream to `IStorageService`, compute and
+  persist SHA-256, validate metadata and size limits, and compensate for storage/database failures.
+
+- [ ] **6.13b — Attachment list and download**
+  Implement authorized metadata listing and streamed download with safe content headers. Verify the attachment
+  belongs to the routed agreement and do not expose storage keys.
+
+- [ ] **6.13c — Attachment deletion**
+  Implement authorized deletion with storage/database consistency and audit recording. Define whether attachments
+  on a signed or active version may be removed, then enforce that rule in application code.
+
+- [ ] **6.14a — Structured JSON export**
+  Export the accessible agreement's versions, signatures, attachment manifest, and audit metadata using explicit
+  export Contracts. Keep persistence entities and sensitive token/storage fields out of the response.
+
+- [ ] **6.14b — Court-ready PDF export**
+  Generate the documented PDF bundle with QuestPDF, including agreement content, version history, signature and
+  attachment manifests, and verifiability metadata. Stream it with stable download headers and focused tests.
+
+- [ ] **6.14c — Server signing and key validation**
+  Validate configured server signing-key material at startup and digitally sign exports. Document key rotation and
+  verification behavior without exposing private material.
+
+- [ ] **6.15a — Append-only audit recording**
+  Add an application abstraction for recording meaningful agreement, version, signature, attachment, and export
+  activity. Prevent ordinary update/delete paths for audit rows and capture actor/IP metadata consistently.
+
+- [ ] **6.15b — Audit query endpoint**
+  Implement an authorized, stable, paginated audit endpoint with explicit ordering and Contract responses.
+  Add tests for access control, page boundaries, and append-only ordering.
+
+- [ ] **6.15c — SignalR publication and authorization**
+  Publish `VersionCreated`, `SignatoryUpdated`, `AgreementStatusChanged`, and `AttachmentUploaded` after committed
+  state changes. Authorize agreement-group membership and avoid broadcasting sensitive data globally.
+
 ---
 
 ## Phase 7 — Test Projects
@@ -310,20 +396,29 @@ Check off each item only after it is implemented and validated. Commits are not 
   Mock `IAgreementRepository` and `IUnitOfWork` with Moq.
   Assert handler calls `AddAsync` and `SaveChangesAsync` and returns a populated `AgreementResponse`.
 
-- [ ] **7.4 — Integration: POST /agreements returns 201**
-  Add `Testcontainers.MsSql` and `Microsoft.AspNetCore.Mvc.Testing` to `Accordly.Integration`.
-  Create `AccordlyWebApplicationFactory.cs` extending `WebApplicationFactory<Program>`.
-  Override `ConfigureWebHost` to replace `ConnectionStrings:DefaultConnection` with the
-  Testcontainers SQL Server connection string.
-  Create `Agreements/CreateAgreementTests.cs`:
-  - `[ClassInitialize]` starts the SQL Server container and applies migrations.
-  - `[ClassCleanup]` disposes the container.
-  - One `[TestMethod]`: authenticate, POST to `/api/v1/agreements`, assert `201 Created`
-    and a valid `AgreementResponse` body.
+- [ ] **7.4a — Agreement integration fixture**
+  Reuse `AccordlyWebApplicationFactory` and the class-scoped SQL Server Testcontainer pattern from the auth lifecycle
+  tests. Add helpers that create an authenticated Identity/domain user pair without bypassing production JWT validation.
 
-- [ ] **7.5 — E2E: Placeholder**
-  In `Accordly.E2E`, add `README.md` explaining Playwright E2E tests live here.
-  Add one `[TestClass]` with one `[Ignore][TestMethod]` placeholder.
+- [ ] **7.4b — Agreement authentication boundary**
+  Assert unauthenticated agreement requests return `401`. Verify client-supplied owner/user identifiers cannot
+  override the authenticated user identity.
+
+- [ ] **7.4c — Authenticated agreement creation**
+  POST `/api/v1/agreements`, assert `201 Created`, a resource-specific `Location`, and a valid `AgreementResponse`.
+  Verify the database owner ID matches the JWT subject and all initial agreement state is persisted.
+
+- [ ] **7.4d — Agreement detail authorization**
+  Verify an owner or permitted participant can retrieve agreement detail and an unrelated user receives the chosen
+  non-disclosing response. Assert both status codes and response bodies.
+
+- [ ] **7.5a — E2E project convention**
+  Keep `Accordly.E2E/README.md` accurate, remove the generated passing placeholder, and add one explicitly ignored
+  MSTest placeholder that names the first planned Playwright workflow.
+
+- [ ] **7.5b — Playwright E2E infrastructure**
+  Add browser installation and application-lifecycle setup only when the first real E2E workflow is implemented.
+  Document required API/frontend/database prerequisites and keep E2E execution separate from fast unit tests.
 
 ---
 
@@ -364,16 +459,13 @@ Check off each item only after it is implemented and validated. Commits are not 
   `tailwind.config.ts`: content paths `["./src/**/*.{vue,ts}"]`.
   `.env.example`: `VITE_API_BASE_URL`, `VITE_SIGNALR_HUB_URL`.
 
-- [ ] **9.3 — Router**
-  Create `src/router/index.ts` with routes:
-  - `/` → `DashboardPage` (auth guard)
-  - `/agreements` → `AgreementsPage` (auth guard)
-  - `/agreements/:id` → `AgreementDetailPage` (auth guard)
-  - `/agreements/:id/edit` → `AgreementEditorPage` (auth guard)
-  - `/sign/:token` → `GuestSignPage` (no guard)
-  - `/login` → `LoginPage` (no guard)
-  - `/register` → `RegisterPage` (no guard)
-  Auth guard reads from auth store; redirects unauthenticated users to `/login`.
+- [x] **9.3a — Base router and authentication guard**
+  Register `/`, `/agreements`, `/agreements/:id`, `/sign/:token`, `/login`, and `/register` with authenticated
+  route metadata where required. Redirect unauthenticated users to `/login` through the auth store.
+
+- [ ] **9.3b — Agreement editor route**
+  Add `/agreements/:id/edit` with authentication metadata when `AgreementEditorPage` exists. Preserve the intended
+  destination during login so an authenticated user can return to the editor route.
 
 - [x] **9.4 — Pinia stores**
   `src/stores/auth.ts`: state `user`, `token`. Actions `login()`, `logout()`, `register()`.
@@ -401,24 +493,39 @@ Check off each item only after it is implemented and validated. Commits are not 
 
 ## Phase 10 — Frontend Features
 
-- [ ] **10.1 — Agreements feature**
-  `AgreementList.vue`: table — Title, Status badge, Created, Actions.
-  Badge colors: Draft=gray, PendingSignatures=yellow, Active=green, Expired=red, Terminated=slate.
-  `AgreementDetail.vue`: title, status badge, expiry, version number. Slots for signatories and attachments.
-  `composables/useAgreements.ts`: wraps store actions with `loading` and `error` state.
-  `index.ts` barrel re-exporting all of the above.
+- [ ] **10.1a — Agreement list presentation**
+  Complete `AgreementList.vue` with Title, Status, Created, and Actions columns. Use distinct badge styles for
+  Draft, PendingSignatures, Active, Expired, and Terminated, and link each agreement to its detail route.
 
-- [x] **10.2 — Signatures feature**
-  `SignatoryList.vue`: email, role, signed/pending badge with timestamp if signed.
-  `GuestSignForm.vue`: read-only agreement body, submit triggers `POST /api/v1/sign/:token`,
-  shows confirmation on success.
-  `index.ts` barrel.
+- [ ] **10.1b — Agreement detail presentation**
+  Complete `AgreementDetail.vue` with title, status, expiry, and current version. Provide named composition slots
+  for signatories, attachments, and export actions without nesting page sections in decorative cards.
 
-- [x] **10.3 — Attachments feature**
-  `AttachmentList.vue`: file name, size, upload date, download link.
-  `AttachmentUpload.vue`: drag-and-drop zone, POSTs `multipart/form-data` to
-  `/api/v1/agreements/:id/attachments`, shows upload progress.
-  `index.ts` barrel.
+- [ ] **10.1c — Agreements composable**
+  Add `composables/useAgreements.ts` around store operations with stable loading, error, retry, and cancellation
+  behavior. Re-export the components and composable from the feature barrel.
+
+- [x] **10.2a — Signatory list presentation**
+  `SignatoryList.vue` displays email, role, and signed/pending state with the signature timestamp when available.
+
+- [ ] **10.2b — Guest agreement presentation**
+  Display the resolved, read-only agreement title, body, version, and signer identity context without exposing the
+  guest token beyond the route/API request.
+
+- [ ] **10.2c — Guest signature submission**
+  Make `GuestSignForm.vue` submit to `POST /api/v1/sign/:token`, prevent duplicate submission, and show success,
+  invalid/expired token, validation, and retryable failure states. Re-export the completed feature surface.
+
+- [x] **10.3a — Attachment list presentation**
+  `AttachmentList.vue` displays file name, size, upload date, and a download action.
+
+- [ ] **10.3b — Attachment selection and drag-and-drop**
+  Add accessible file selection and drag-and-drop behavior with selected-file metadata, size/type validation,
+  replacement, and removal before upload.
+
+- [ ] **10.3c — Attachment upload integration**
+  POST multipart data to `/api/v1/agreements/:id/attachments`, report progress, prevent duplicate submission,
+  refresh the attachment list on success, and surface validation/network failures. Re-export the completed feature.
 
 - [x] **10.4 — Export feature**
   `ExportButton.vue`: button calls `GET /api/v1/agreements/:id/export/pdf`,
@@ -429,47 +536,87 @@ Check off each item only after it is implemented and validated. Commits are not 
 
 ## Phase 11 — Frontend Pages
 
-- [ ] **11.1 — DashboardPage**
-  Greeting with user display name. Recent agreements via `AgreementList` (5 most recent).
-  "Create Agreement" button linking to `/agreements`.
+- [ ] **11.1a — Dashboard identity and recent agreements**
+  Greet the authenticated user by display name and render the five most recently updated accessible agreements
+  through `AgreementList`, including loading, empty, and failure states.
 
-- [ ] **11.2 — AgreementsPage**
-  Full `AgreementList` with pagination. "New Agreement" button opens a modal —
-  title input + optional expiry date. On submit, `create()` from store, navigate to detail.
+- [ ] **11.1b — Dashboard create action**
+  Add a clear "Create Agreement" action that navigates to the agreement creation workflow.
 
-- [ ] **11.3 — AgreementDetailPage**
-  Fetches by `:id` on mount. Composes `AgreementDetail`, `SignatoryList`, `AttachmentList`
-  (with `AttachmentUpload`), `ExportButton`. "Edit" links to `/agreements/:id/edit`.
-  Listens to SignalR events via `useSignalR` to reactively update signatories and status.
+- [ ] **11.2a — Paginated agreements page**
+  Render the complete accessible agreement list with stable pagination, loading, empty, retry, and responsive states.
+  Keep page state in the URL when practical.
 
-- [ ] **11.4 — AgreementEditorPage**
-  Loads current version body into a Tiptap editor (StarterKit).
-  "Save Version" POSTs to `/api/v1/agreements/:id/versions` with body as Markdown
-  and optional change note. Navigates back to detail on success.
+- [ ] **11.2b — Agreement creation modal**
+  Add an accessible modal with required title and optional expiry, field validation, submit/error states, and focus
+  restoration. Call `create()` and navigate to the returned detail route only after success.
 
-- [ ] **11.5 — GuestSignPage**
-  Calls `GET /api/v1/sign/:token` to resolve agreement. Renders `GuestSignForm` inside
-  `GuestLayout`. Shows clear error state for invalid or expired tokens.
+- [ ] **11.3a — Agreement detail composition**
+  Fetch by route ID and compose `AgreementDetail`, `SignatoryList`, `AttachmentList`, `AttachmentUpload`, and
+  `ExportButton`. Add an Edit action to `/agreements/:id/edit` plus loading, not-found, and access-denied states.
 
-- [ ] **11.6 — LoginPage / RegisterPage**
-  `LoginPage.vue`: email + password, dispatches `login()`, redirects to `/` on success.
-  `RegisterPage.vue`: email + display name + password, dispatches `register()`,
-  redirects to `/login` on success. Both show field-level validation errors.
+- [ ] **11.3b — Agreement detail child-data loading**
+  Load signatories, attachments, and version summary through feature-owned API/state boundaries. Reconcile child
+  loading and failure states without discarding successfully loaded agreement data.
+
+- [ ] **11.3c — Agreement detail SignalR updates**
+  Subscribe to agreement-scoped events, update or refetch the affected state without duplication, and unregister
+  handlers when the route changes or unmounts. Cover reconnect behavior.
+
+- [ ] **11.4a — Agreement version API workflow**
+  Complete and validate backend version creation/read behavior from Phase 6.11 before connecting the editor.
+
+- [ ] **11.4b — Tiptap agreement editor**
+  Add `AgreementEditorPage` with StarterKit, load the current immutable version into editable state, and preserve
+  unsaved content across ordinary component updates. Provide accessible editing and change-note controls.
+
+- [ ] **11.4c — Save-version interaction**
+  POST the editor body and optional change note to `/api/v1/agreements/:id/versions`, prevent duplicate saves,
+  show validation/network errors, and navigate to detail only after a successful new-version response.
+
+- [ ] **11.5a — Guest token resolution page**
+  Resolve `GET /api/v1/sign/:token` and render distinct loading, invalid, expired, revoked, already-used, and success
+  states inside `GuestLayout` without entering authenticated application navigation.
+
+- [ ] **11.5b — Guest signing composition**
+  Pass the resolved agreement and token-bound signer context into `GuestSignForm`, handle submission completion,
+  and prevent stale agreement content from being signed.
+
+- [ ] **11.6a — Login page**
+  Add email/password validation, dispatch `login()`, show field/general errors without disclosing account existence,
+  and redirect to the preserved authenticated destination on success.
+
+- [ ] **11.6b — Registration page**
+  Add email/display-name/password validation, dispatch `register()`, display Identity validation errors safely,
+  and follow the implemented registration response flow rather than assuming a second login is required.
 
 ---
 
 ## Phase 12 — Frontend Tests
 
-- [ ] **12.1 — useApi composable test**
+- [ ] **12.0 — Vitest infrastructure**
+  Add `test` and optional watch scripts to `frontend/package.json`, ensure the `jsdom` environment is directly
+  available, and create shared setup for DOM cleanup, Pinia, router, localStorage, and HTTP mocks. Verify an empty
+  or smoke suite runs through `pnpm test` before adding behavioral tests.
+
+- [ ] **12.1 — useApi composable tests**
   `tests/composables/useApi.spec.ts`
   Mock Axios. Assert Bearer header is attached when token exists.
-  Assert 401 response triggers redirect to `/login`.
+  Assert 401 response triggers redirect to `/login` without creating redirect loops on public auth routes.
 
-- [ ] **12.2 — Auth store test**
+- [ ] **12.2 — Auth store tests**
   `tests/stores/auth.spec.ts`
   Assert `login()` sets `token` in state and writes to `localStorage`.
   Assert `logout()` clears both.
-  Assert `register()` calls the correct API endpoint.
+  Assert `register()` calls the correct API endpoint and handles the implemented `AuthResponse` semantics.
+
+- [ ] **12.3 — Router authorization tests**
+  Verify protected routes redirect without a token, public auth/guest routes remain accessible, and the preserved
+  destination is restored after login.
+
+- [ ] **12.4 — Agreement workflow component tests**
+  Cover agreement creation validation/navigation, detail loading states, attachment upload progress/failure, guest
+  signing terminal states, and SignalR handler cleanup as those workflows are implemented.
 
 ---
 
@@ -482,6 +629,6 @@ Before marking the scaffold complete, verify all of the following:
 - [ ] `docker compose up -d` — all three services start cleanly
 - [x] `dotnet ef database update` — migration applies against local SQL Server container
 - [ ] API starts and Swagger UI loads at `https://localhost:5001/swagger`
-- [ ] `pnpm tsc --noEmit` — passes with strict mode
+- [ ] `pnpm exec vue-tsc --noEmit` — passes with strict mode
 - [ ] `pnpm test` — all Vitest tests pass
 - [ ] Frontend dev server starts at `http://localhost:5173` and login page renders
