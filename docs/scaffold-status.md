@@ -38,11 +38,12 @@
 
 ## Still Outstanding
 
-- Agreement authorization is partially implemented through a shared application policy: owners and collaborators
-	may mutate, owners/collaborators/signers/viewers may read, and unauthorized detail reads are non-disclosing;
-	deletion is owner-only while version workflows and broader CRUD remain outstanding
-- Immutable version workflows/diff, signatory and guest signing, attachment persistence, exports, audit
-	recording/querying, and authorized SignalR publication behind the existing route-module shells
+- Agreement authorization is enforced through a shared application policy: owners and collaborators may perform
+	ordinary mutations, owners/collaborators/signers/viewers may read, and inaccessible agreement resources return
+	non-disclosing results. Agreement deletion is intentionally owner-only, and registered signing is limited to the
+	caller’s own signatory record.
+- Attachment persistence, exports, audit recording/querying, and authorized SignalR publication behind the existing
+	route-module shells
 - Agreement integration coverage beyond the validated auth lifecycle test, followed by real Playwright E2E infrastructure
 - Frontend Vitest setup and behavioral coverage for API interception, auth state, routing, and agreement workflows
 - Agreement editor route, Tiptap editor, and validated AgreementVersion save workflow

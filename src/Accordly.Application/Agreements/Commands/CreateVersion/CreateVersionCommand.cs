@@ -8,4 +8,4 @@ public sealed record CreateVersionCommand(
     Guid AgreementId,
     Guid AuthorId,
     string Body,
-    string? ChangeNote) : IRequest<AgreementVersionResponse>;
+    string? ChangeNote) : IRequest<AgreementVersionResponse?>;

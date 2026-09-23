@@ -298,10 +298,11 @@ Check off each item only after it is implemented and validated. Commits are not 
   owner IDs, and request-controlled user IDs from authorization and ownership decisions. Implemented with
   `ICurrentUserService`, `401 Unauthorized` handling, agreement route propagation, and focused unit tests.
 
-- [ ] **6.9b — Agreement authorization policy** *(partial: shared policy and detail-read enforcement implemented; mutation enforcement awaits mutation handlers)*
-  Define owner, collaborator, signer, and viewer access for agreement reads and mutations. Enforce the policy
-  in application handlers or a shared authorization service rather than duplicating it in Carter lambdas.
-  Return a non-disclosing response for users who cannot access an agreement.
+- [x] **6.9b — Agreement authorization policy**
+  Owners, collaborators, signers, and viewers can read agreements through the shared application authorization
+  service. Owners and collaborators can perform ordinary mutations; agreement deletion remains owner-only and
+  registered signing is restricted to the caller's own signatory record. Handlers return non-disclosing results
+  for inaccessible agreements, with focused authorization tests covering the mutation boundary.
 
 - [x] **6.10a — Agreement list and detail queries**
   Implement authenticated agreement listing and detail retrieval. Scope list results to agreements visible

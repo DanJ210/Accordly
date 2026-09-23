@@ -18,6 +18,10 @@ public sealed class CreateVersionCommandHandlerTests
         agreementRepository
             .Setup(repository => repository.GetByIdAsync(agreement.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(agreement);
+        var authorizationService = new Mock<IAgreementAuthorizationService>();
+        authorizationService
+            .Setup(service => service.CanMutateAsync(agreement.Id, agreement.OwnerId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
         agreementRepository
             .Setup(repository => repository.GetNextVersionNumberAsync(agreement.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
@@ -25,7 +29,7 @@ public sealed class CreateVersionCommandHandlerTests
             .Setup(repository => repository.AddVersionAsync(It.IsAny<AgreementVersion>(), It.IsAny<CancellationToken>()))
             .Callback<AgreementVersion, CancellationToken>((version, _) => addedVersion = version)
             .Returns(Task.CompletedTask);
-        var handler = new CreateVersionCommandHandler(agreementRepository.Object, unitOfWork.Object);
+        var handler = new CreateVersionCommandHandler(agreementRepository.Object, authorizationService.Object, unitOfWork.Object);
 
         var response = await handler.Handle(new CreateVersionCommand(agreement.Id, agreement.OwnerId, "<p>First draft</p>", "Initial revision"), CancellationToken.None);
 
@@ -41,5 +45,29 @@ public sealed class CreateVersionCommandHandlerTests
         agreementRepository.Verify(repository => repository.AddVersionAsync(It.IsAny<AgreementVersion>(), It.IsAny<CancellationToken>()), Times.Once);
         agreementRepository.Verify(repository => repository.UpdateAsync(agreement, It.IsAny<CancellationToken>()), Times.Once);
         unitOfWork.Verify(work => work.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task Handle_WithoutMutationAccess_ReturnsNullWithoutChangingAgreement()
+    {
+        var agreement = new Agreement { Title = "Protected agreement", OwnerId = Guid.NewGuid() };
+        var requestingUserId = Guid.NewGuid();
+        var agreementRepository = new Mock<IAgreementRepository>();
+        var authorizationService = new Mock<IAgreementAuthorizationService>();
+        var unitOfWork = new Mock<IUnitOfWork>();
+        agreementRepository
+            .Setup(repository => repository.GetByIdAsync(agreement.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(agreement);
+        authorizationService
+            .Setup(service => service.CanMutateAsync(agreement.Id, requestingUserId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+        var handler = new CreateVersionCommandHandler(agreementRepository.Object, authorizationService.Object, unitOfWork.Object);
+
+        var response = await handler.Handle(new CreateVersionCommand(agreement.Id, requestingUserId, "<p>Blocked</p>", null), CancellationToken.None);
+
+        Assert.IsNull(response);
+        agreementRepository.Verify(repository => repository.AddVersionAsync(It.IsAny<AgreementVersion>(), It.IsAny<CancellationToken>()), Times.Never);
+        agreementRepository.Verify(repository => repository.UpdateAsync(It.IsAny<Agreement>(), It.IsAny<CancellationToken>()), Times.Never);
+        unitOfWork.Verify(work => work.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 }

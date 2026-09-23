@@ -31,11 +31,12 @@ Agreement versions are not changed by metadata or lifecycle updates.
 | Method | Route | Access | Purpose |
 | --- | --- | --- | --- |
 | GET | `/agreements/{id}/versions` | Authenticated | List versions |
-| POST | `/agreements/{id}/versions` | Authenticated | Create an immutable version |
+| POST | `/agreements/{id}/versions` | Owner or collaborator | Create an immutable version; returns `201 Created` |
 | GET | `/agreements/{id}/versions/{versionId}` | Authenticated | Read one version |
 | GET | `/agreements/{id}/versions/diff?from=&to=` | Authenticated | Compare two versions |
 
-The diff route validates both version IDs, requires the versions to belong to the same accessible agreement,
+Version creation uses the authenticated caller as its author and returns the same non-disclosing `404 Not Found`
+result for missing or inaccessible agreements. The diff route validates both version IDs, requires the versions to belong to the same accessible agreement,
 returns a `404 Not Found` for missing or mismatched versions, and returns a response with the source/target version
 metadata and a transport-safe list of field-level changes.
 

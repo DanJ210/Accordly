@@ -7,23 +7,28 @@ using MediatR;
 namespace Accordly.Application.Agreements.Commands.CreateVersion;
 
 /// <summary>Handles creation of the next agreement version.</summary>
-public sealed class CreateVersionCommandHandler : IRequestHandler<CreateVersionCommand, AgreementVersionResponse>
+public sealed class CreateVersionCommandHandler : IRequestHandler<CreateVersionCommand, AgreementVersionResponse?>
 {
     private readonly IAgreementRepository agreementRepository;
+    private readonly IAgreementAuthorizationService authorizationService;
     private readonly IUnitOfWork unitOfWork;
 
     /// <summary>Initializes the handler.</summary>
-    public CreateVersionCommandHandler(IAgreementRepository agreementRepository, IUnitOfWork unitOfWork)
+    public CreateVersionCommandHandler(IAgreementRepository agreementRepository, IAgreementAuthorizationService authorizationService, IUnitOfWork unitOfWork)
     {
         this.agreementRepository = agreementRepository;
+        this.authorizationService = authorizationService;
         this.unitOfWork = unitOfWork;
     }
 
     /// <inheritdoc />
-    public async Task<AgreementVersionResponse> Handle(CreateVersionCommand request, CancellationToken cancellationToken)
+    public async Task<AgreementVersionResponse?> Handle(CreateVersionCommand request, CancellationToken cancellationToken)
     {
-        var agreement = await agreementRepository.GetByIdAsync(request.AgreementId, cancellationToken)
-            ?? throw new KeyNotFoundException($"Agreement '{request.AgreementId}' was not found.");
+        var agreement = await agreementRepository.GetByIdAsync(request.AgreementId, cancellationToken);
+        if (agreement is null || !await authorizationService.CanMutateAsync(request.AgreementId, request.AuthorId, cancellationToken))
+        {
+            return null;
+        }
 
         var versionNumber = await agreementRepository.GetNextVersionNumberAsync(agreement.Id, cancellationToken);
         var version = new AgreementVersion
