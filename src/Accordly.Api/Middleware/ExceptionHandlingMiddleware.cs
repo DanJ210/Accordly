@@ -16,6 +16,10 @@ public sealed class ExceptionHandlingMiddleware(RequestDelegate next, IHostEnvir
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             await context.Response.WriteAsJsonAsync(new { errors = exception.Errors.GroupBy(error => error.PropertyName).ToDictionary(group => group.Key, group => group.Select(error => error.ErrorMessage)) });
         }
+        catch (UnauthorizedAccessException)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+        }
         catch (KeyNotFoundException) { context.Response.StatusCode = (int)HttpStatusCode.NotFound; }
         catch (Exception exception)
         {

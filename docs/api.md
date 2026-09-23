@@ -4,6 +4,10 @@ All API routes are prefixed with `/api/v1`.
 
 Unless marked public, routes require a JWT bearer token. The API uses Carter modules and returns JSON contracts from `Accordly.Contracts`.
 
+Authenticated agreement routes resolve the acting user from the JWT `NameIdentifier` claim emitted by
+`TokenService`. Missing, malformed, empty, or unauthenticated identity claims return `401 Unauthorized`;
+client-supplied owner or user identifiers are not used for ownership decisions.
+
 ## Agreements
 
 | Method | Route | Access | Purpose |

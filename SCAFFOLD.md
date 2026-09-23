@@ -292,10 +292,11 @@ Check off each item only after it is implemented and validated. Commits are not 
   `docs/architecture.md`, and configuration documentation with the implemented contracts, persistence
   shape, security behavior, and settings. Run the narrow auth tests, then `dotnet build Accordly.slnx`.
 
-- [ ] **6.9a — Authenticated user identity resolution**
+- [x] **6.9a — Authenticated user identity resolution**
   Add one API-owned helper or service that extracts the stable user ID emitted by `TokenService` from
   authenticated claims. Reject a missing or malformed claim consistently. Remove `Guid.Empty`, query-string
-  owner IDs, and request-controlled user IDs from authorization and ownership decisions.
+  owner IDs, and request-controlled user IDs from authorization and ownership decisions. Implemented with
+  `ICurrentUserService`, `401 Unauthorized` handling, agreement route propagation, and focused unit tests.
 
 - [ ] **6.9b — Agreement authorization policy**
   Define owner, collaborator, signer, and viewer access for agreement reads and mutations. Enforce the policy

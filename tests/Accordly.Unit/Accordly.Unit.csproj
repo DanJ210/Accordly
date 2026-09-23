@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Accordly.Domain\Accordly.Domain.csproj" />
     <ProjectReference Include="..\..\src\Accordly.Application\Accordly.Application.csproj" />
+    <ProjectReference Include="..\..\src\Accordly.Api\Accordly.Api.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 using Accordly.Api.Hubs;
 using Accordly.Api.Middleware;
+using Accordly.Api.Services;
 using Accordly.Application;
 using Accordly.Infrastructure;
 using Carter;
@@ -26,6 +27,7 @@ if (refreshExpiryHours <= 0)
 builder.Host.UseSerilog();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddCarter();
 builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();

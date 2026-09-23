@@ -17,6 +17,8 @@
 - Server-side refresh-token persistence with SHA-256 hashes, lifecycle metadata, indexes, and an additive migration
 - EF repositories, unit of work, S3-compatible storage, SMTP email, and Hangfire registration
 - Scoped token service for configured JWT issuance and cryptographically secure refresh-token creation
+- API-owned `ICurrentUserService` claim resolution using the JWT `NameIdentifier` claim, with consistent `401`
+	handling for missing, malformed, empty, or unauthenticated identities
 - API composition root with Carter, JWT bearer configuration, Serilog, Swagger, exception middleware, and SignalR hub
 - Separate Carter modules for versions, signatories, attachments, export, auth, and audit, with authorization excluded from public auth and guest-signing routes
 - Docker Compose services for SQL Server, MinIO, and MailHog
@@ -25,7 +27,8 @@
 
 ## Still Outstanding
 
-- Claim-based acting-user resolution and agreement authorization; current agreement routes still contain temporary client-supplied/empty identity values
+- Agreement authorization policy and real agreement CRUD remain outstanding; current agreement handlers still
+	need shared owner/participant access rules, but agreement route identity now comes only from authenticated claims
 - Real agreement CRUD, immutable version workflows/diff, signatory and guest signing, attachment persistence, exports, audit recording/querying, and authorized SignalR publication behind the existing route-module shells
 - Agreement integration coverage beyond the validated auth lifecycle test, followed by real Playwright E2E infrastructure
 - Frontend Vitest setup and behavioral coverage for API interception, auth state, routing, and agreement workflows
