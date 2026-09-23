@@ -14,6 +14,8 @@
 - Authenticated agreement creation with validated title/expiry input, owner assignment, persistence, focused
 	unit tests, and a resource-specific `201 Created` location
 - Authenticated agreement list and detail queries, including visible-membership scoping and current-version mapping
+- Validated agreement PATCH updates with lifecycle transitions, immutable-version preservation, mutation authorization,
+	owner-only DELETE handling, and focused command/validator tests; audit-event recording remains outstanding
 - Create-agreement validator and handler unit tests
 - SQL Server EF Core context and entity configurations
 - Initial EF Core migration, inspected SQL, and verified SQL Server application
@@ -32,9 +34,9 @@
 
 - Agreement authorization is partially implemented through a shared application policy: owners and collaborators
 	may mutate, owners/collaborators/signers/viewers may read, and unauthorized detail reads are non-disclosing;
-	mutation handlers and full CRUD remain outstanding
-- Agreement update/deletion, immutable version workflows/diff, signatory and guest signing, attachment persistence,
-	exports, audit recording/querying, and authorized SignalR publication behind the existing route-module shells
+	deletion is owner-only while version workflows and broader CRUD remain outstanding
+- Immutable version workflows/diff, signatory and guest signing, attachment persistence, exports, audit
+	recording/querying, and authorized SignalR publication behind the existing route-module shells
 - Agreement integration coverage beyond the validated auth lifecycle test, followed by real Playwright E2E infrastructure
 - Frontend Vitest setup and behavioral coverage for API interception, auth state, routing, and agreement workflows
 - Agreement editor route, Tiptap editor, and validated AgreementVersion save workflow

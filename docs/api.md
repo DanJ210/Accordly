@@ -10,7 +10,7 @@ client-supplied owner or user identifiers are not used for ownership decisions.
 
 Agreement detail reads use the persisted membership policy: owners, collaborators, signers, and viewers may read;
 owners and collaborators may mutate. Missing and unauthorized agreement details are returned as the same `404 Not Found`
-result. Mutation endpoints remain stubs until their application handlers are implemented.
+result. Missing or unauthorized agreement updates and deletes are also returned as `404 Not Found`.
 
 ## Agreements
 
@@ -19,8 +19,12 @@ result. Mutation endpoints remain stubs until their application handlers are imp
 | GET | `/agreements` | Authenticated | List agreements for the current user |
 | POST | `/agreements` | Authenticated | Create an agreement; returns `201 Created` |
 | GET | `/agreements/{id}` | Authenticated | Read agreement details and current version |
-| PATCH | `/agreements/{id}` | Authenticated | Update title, status, or expiry |
-| DELETE | `/agreements/{id}` | Authenticated | Remove an agreement for its owner |
+| PATCH | `/agreements/{id}` | Authenticated | Update title, status, or expiry; owners and collaborators may mutate |
+| DELETE | `/agreements/{id}` | Authenticated | Remove an agreement for its owner; returns `204 No Content` |
+
+PATCH accepts an optional `title`, `expiresAt`, and `status` body. At least one field is required;
+title is limited to 250 characters and status values must follow the lifecycle transition rules.
+Agreement versions are not changed by metadata or lifecycle updates.
 
 ## Versions
 
