@@ -21,7 +21,18 @@ public sealed class AgreementRepository(AccordlyDbContext db) : IAgreementReposi
     public Task<AgreementVersion?> GetVersionAsync(Guid agreementId, Guid versionId, CancellationToken cancellationToken = default) => db.AgreementVersions
         .FirstOrDefaultAsync(version => version.AgreementId == agreementId && version.Id == versionId, cancellationToken);
     /// <inheritdoc />
+    public async Task<int> GetNextVersionNumberAsync(Guid agreementId, CancellationToken cancellationToken = default)
+    {
+        var latestVersionNumber = await db.AgreementVersions
+            .Where(version => version.AgreementId == agreementId)
+            .MaxAsync(version => (int?)version.VersionNumber, cancellationToken);
+
+        return (latestVersionNumber ?? 0) + 1;
+    }
+    /// <inheritdoc />
     public async Task AddAsync(Agreement agreement, CancellationToken cancellationToken = default) => await db.Agreements.AddAsync(agreement, cancellationToken);
+    /// <inheritdoc />
+    public async Task AddVersionAsync(AgreementVersion version, CancellationToken cancellationToken = default) => await db.AgreementVersions.AddAsync(version, cancellationToken);
     /// <inheritdoc />
     public Task UpdateAsync(Agreement agreement, CancellationToken cancellationToken = default) { db.Agreements.Update(agreement); return Task.CompletedTask; }
     /// <inheritdoc />

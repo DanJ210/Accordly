@@ -16,6 +16,8 @@
 - Authenticated agreement list and detail queries, including visible-membership scoping and current-version mapping
 - Validated agreement PATCH updates with lifecycle transitions, immutable-version preservation, mutation authorization,
 	owner-only DELETE handling, and focused command/validator tests; audit-event recording remains outstanding
+- Version-creation workflow with transactional `AgreementVersion` creation, per-agreement number assignment,
+	`CurrentVersionId` updates, and documented event creation
 - Create-agreement validator and handler unit tests
 - SQL Server EF Core context and entity configurations
 - Initial EF Core migration, inspected SQL, and verified SQL Server application

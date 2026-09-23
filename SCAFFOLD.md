@@ -319,9 +319,9 @@ Check off each item only after it is implemented and validated. Commits are not 
   Status-transition rules and immutable versions are preserved. Complete the item when update/delete audit events
   are recorded and covered by tests.
 
-- [ ] **6.11a — Version creation workflow**
-  Add repository/application support for creating the next immutable `AgreementVersion` transactionally,
-  assigning its per-agreement version number, setting `CurrentVersionId`, and publishing the documented event.
+- [x] **6.11a — Version creation workflow**
+  Added repository/application support for creating the next immutable `AgreementVersion` transactionally,
+  assigning its per-agreement version number, setting `CurrentVersionId`, and creating the documented event.
 
 - [ ] **6.11b — Version read and list endpoints**
   Implement authorized version listing and retrieval with Contract responses. Ensure version and agreement IDs
