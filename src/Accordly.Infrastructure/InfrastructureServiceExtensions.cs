@@ -34,6 +34,7 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<TokenService>();
         services.AddScoped<IAgreementAuthorizationService, AgreementAuthorizationService>();
         services.AddScoped<IAgreementRepository, AgreementRepository>();
+        services.AddScoped<IAuditEventRecorder, AuditEventRecorder>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();

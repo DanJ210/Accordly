@@ -1,12 +1,14 @@
+using System.Text.Json;
 using Accordly.Application.Common.Interfaces;
 using Accordly.Contracts.Agreements;
+using Accordly.Domain.Entities;
 using Accordly.Domain.Enums;
 using MediatR;
 
 namespace Accordly.Application.Agreements.Commands.UpdateAgreement;
 
 /// <summary>Handles agreement updates.</summary>
-public sealed class UpdateAgreementCommandHandler(IAgreementRepository agreementRepository, IAgreementAuthorizationService authorizationService, IUnitOfWork unitOfWork) : IRequestHandler<UpdateAgreementCommand, AgreementResponse?>
+public sealed class UpdateAgreementCommandHandler(IAgreementRepository agreementRepository, IAgreementAuthorizationService authorizationService, IAuditEventRecorder auditEventRecorder, IUnitOfWork unitOfWork) : IRequestHandler<UpdateAgreementCommand, AgreementResponse?>
 {
     /// <inheritdoc />
     public async Task<AgreementResponse?> Handle(UpdateAgreementCommand request, CancellationToken cancellationToken)
@@ -34,6 +36,18 @@ public sealed class UpdateAgreementCommandHandler(IAgreementRepository agreement
 
         agreement.UpdatedAt = DateTimeOffset.UtcNow;
         await agreementRepository.UpdateAsync(agreement, cancellationToken);
+        await auditEventRecorder.RecordAsync(new AuditEvent
+        {
+            AgreementId = agreement.Id,
+            ActorId = request.RequestingUserId,
+            EventType = "AgreementUpdated",
+            Payload = JsonSerializer.Serialize(new
+            {
+                agreement.Title,
+                agreement.ExpiresAt,
+                Status = agreement.Status.ToString()
+            })
+        }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return new AgreementResponse(agreement.Id, agreement.Title, agreement.Status.ToString(), agreement.OwnerId, agreement.CreatedAt, agreement.UpdatedAt, agreement.ExpiresAt);
     }

@@ -315,10 +315,10 @@ Check off each item only after it is implemented and validated. Commits are not 
   `Location`, and preserve owner access through the agreement's owner membership (`OwnerId`). The command,
   validator, handler, and focused unit tests are implemented and passing.
 
-- [ ] **6.10c — Agreement update and deletion** *(partial: update/delete handlers, validation, authorization, and focused tests implemented; audit recording remains outstanding)*
-  Replaced the PATCH and DELETE stubs with validated title, expiry, and lifecycle changes plus owner-only deletion.
-  Status-transition rules and immutable versions are preserved. Complete the item when update/delete audit events
-  are recorded and covered by tests.
+- [x] **6.10c — Agreement update and deletion**
+  PATCH and DELETE use validated title, expiry, and lifecycle changes, with shared mutation authorization and
+  owner-only deletion. Status-transition rules and immutable versions are preserved. Successful updates and
+  deletions append transactional audit events, covered by focused handler tests.
 
 - [x] **6.11a — Version creation workflow**
   Added repository/application support for creating the next immutable `AgreementVersion` transactionally,

@@ -24,7 +24,8 @@ result. Missing or unauthorized agreement updates and deletes are also returned 
 
 PATCH accepts an optional `title`, `expiresAt`, and `status` body. At least one field is required;
 title is limited to 250 characters and status values must follow the lifecycle transition rules.
-Agreement versions are not changed by metadata or lifecycle updates.
+Agreement versions are not changed by metadata or lifecycle updates. Successful updates and owner-initiated
+deletions append `AgreementUpdated` and `AgreementDeleted` audit records, respectively.
 
 ## Versions
 

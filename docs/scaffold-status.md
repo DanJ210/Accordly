@@ -15,7 +15,7 @@
 	unit tests, and a resource-specific `201 Created` location
 - Authenticated agreement list and detail queries, including visible-membership scoping and current-version mapping
 - Validated agreement PATCH updates with lifecycle transitions, immutable-version preservation, mutation authorization,
-	owner-only DELETE handling, and focused command/validator tests; audit-event recording remains outstanding
+	owner-only DELETE handling, transactional append-only audit records, and focused command/validator tests
 - Version-creation workflow with transactional `AgreementVersion` creation, per-agreement number assignment,
 	`CurrentVersionId` updates, and documented event creation
 - Version read/list query support with agreement-scoped access checks and matching version-to-agreement validation
@@ -42,8 +42,8 @@
 	ordinary mutations, owners/collaborators/signers/viewers may read, and inaccessible agreement resources return
 	non-disclosing results. Agreement deletion is intentionally owner-only, and registered signing is limited to the
 	caller’s own signatory record.
-- Attachment persistence, exports, audit recording/querying, and authorized SignalR publication behind the existing
-	route-module shells
+- Attachment persistence, exports, comprehensive audit recording/querying, and authorized SignalR publication behind
+	the existing route-module shells
 - Agreement integration coverage beyond the validated auth lifecycle test, followed by real Playwright E2E infrastructure
 - Frontend Vitest setup and behavioral coverage for API interception, auth state, routing, and agreement workflows
 - Agreement editor route, Tiptap editor, and validated AgreementVersion save workflow

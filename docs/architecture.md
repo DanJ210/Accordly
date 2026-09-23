@@ -76,6 +76,9 @@ The ASP.NET Core host. It composes dependency injection, authentication, middlew
 - Signatures identify the version signed.
 - Attachments are pinned to agreement versions and retain SHA-256 hashes.
 - Audit events are append-only.
+- Agreement updates and deletions append structured audit records through `IAuditEventRecorder` in the same
+    unit-of-work commit as the mutation. The recorder only exposes event creation; broader audit activity and
+    querying remain planned work.
 - Identity and authorization decisions use server-side claims and persisted credentials. API agreement routes
     resolve the acting user through `ICurrentUserService` from the JWT `NameIdentifier` claim; missing, malformed,
     empty, or unauthenticated claims are rejected with `401 Unauthorized`.
