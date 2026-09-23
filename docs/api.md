@@ -35,6 +35,10 @@ Agreement versions are not changed by metadata or lifecycle updates.
 | GET | `/agreements/{id}/versions/{versionId}` | Authenticated | Read one version |
 | GET | `/agreements/{id}/versions/diff?from=&to=` | Authenticated | Compare two versions |
 
+The diff route validates both version IDs, requires the versions to belong to the same accessible agreement,
+returns a `404 Not Found` for missing or mismatched versions, and returns a response with the source/target version
+metadata and a transport-safe list of field-level changes.
+
 ## Signatories
 
 | Method | Route | Access | Purpose |

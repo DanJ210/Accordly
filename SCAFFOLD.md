@@ -327,9 +327,10 @@ Check off each item only after it is implemented and validated. Commits are not 
   Implemented authorized version listing and retrieval with Contract responses. The handlers verify access and
   match the version to the agreement ID so a version cannot be read through a different agreement route.
 
-- [ ] **6.11c — Version diff endpoint**
-  Validate `from` and `to`, load two versions from the same accessible agreement, and return a transport-safe
-  diff response suitable for the frontend viewer. Add tests for missing and mismatched versions.
+- [x] **6.11c — Version diff endpoint**
+  Implemented an authenticated `/agreements/{id}/versions/diff?from=&to=` query that validates both version IDs,
+  ensures both versions belong to the same accessible agreement, and returns a transport-safe diff response for the
+  frontend viewer. Includes tests for successful diffing and missing/mismatched version pairs.
 
 - [ ] **6.12a — Signatory management**
   Implement authorized signatory listing, invitation, and removal of unsigned signatories. Validate role values,

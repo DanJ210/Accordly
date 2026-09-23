@@ -1,8 +1,10 @@
 using Accordly.Api.Services;
 using Accordly.Application.Agreements.Queries.GetVersion;
+using Accordly.Application.Agreements.Queries.GetVersionDiff;
 using Accordly.Application.Agreements.Queries.ListVersions;
 using Carter;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Accordly.Api.Modules;
 
@@ -24,7 +26,11 @@ public sealed class VersionsModule : ICarterModule
             var result = await sender.Send(new GetVersionQuery(id, currentUser.GetRequiredUserId(context.User), versionId), cancellationToken);
             return result is null ? Results.NotFound() : Results.Ok(result);
         });
+        group.MapGet("/diff", async (Guid id, [FromQuery] Guid from, [FromQuery] Guid to, HttpContext context, ICurrentUserService currentUser, ISender sender, CancellationToken cancellationToken) =>
+        {
+            var result = await sender.Send(new GetVersionDiffQuery(id, currentUser.GetRequiredUserId(context.User), from, to), cancellationToken);
+            return result is null ? Results.NotFound() : Results.Ok(result);
+        });
         group.MapPost("/", () => Results.Ok("stub"));
-        group.MapGet("/diff", () => Results.Ok("stub"));
     }
 }
