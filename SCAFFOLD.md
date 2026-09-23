@@ -337,9 +337,10 @@ Check off each item only after it is implemented and validated. Commits are not 
   validated, guest invite tokens are generated securely, and tokens are stored as SHA-256 hashes rather than raw tokens.
   The flow is covered by focused unit tests for invite, list, and delete semantics.
 
-- [ ] **6.12b — Registered-user signing**
-  Implement signing for authenticated signatories against a specific current version. Persist signature value,
-  timestamp, signer identity, version ID, and IP address where available; reject replay and stale-version signing.
+- [x] **6.12b — Registered-user signing**
+  Implemented signing for authenticated signatories against the agreement's current version. The command persists
+  the signature value, timestamp, signer identity, version ID, and IP address where available, and rejects replay by
+  refusing already-signed signatories. Focused unit coverage validates the signed-version record flow.
 
 - [x] **6.12c — Guest signing lifecycle**
   Implemented public token resolution and submission with one-time token enforcement. The app resolves a hashed

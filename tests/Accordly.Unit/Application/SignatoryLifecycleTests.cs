@@ -4,6 +4,7 @@ using System.Text;
 using Accordly.Application.Agreements.Commands.DeleteSignatory;
 using Accordly.Application.Agreements.Commands.InviteSignatory;
 using Accordly.Application.Agreements.Commands.SubmitGuestSignature;
+using Accordly.Application.Agreements.Commands.SubmitRegisteredSignature;
 using Accordly.Application.Agreements.Queries.ListSignatories;
 using Accordly.Application.Common.Interfaces;
 using Accordly.Domain.Common;
@@ -101,6 +102,40 @@ public sealed class SignatoryLifecycleTests
         Assert.IsNotNull(signatory.SignedAt);
         Assert.AreEqual(currentVersionId, signatory.VersionSignedId);
         Assert.IsNull(signatory.InviteToken);
+        repository.Verify(service => service.UpdateSignatoryAsync(signatory, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task SubmitRegisteredSignature_WithMatchingUser_RecordsSignature()
+    {
+        var agreementId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        var agreement = new Agreement { Title = "Review", OwnerId = Guid.NewGuid() };
+        SetEntityId(agreement, agreementId);
+        agreement.CurrentVersionId = Guid.NewGuid();
+
+        var signatory = new Signatory
+        {
+            AgreementId = agreementId,
+            UserId = userId,
+            Email = "member@example.com",
+            Role = SignatoryRole.Signer
+        };
+        SetEntityId(signatory, Guid.NewGuid());
+
+        var repository = new Mock<IAgreementRepository>();
+        repository.Setup(service => service.GetSignatoryAsync(agreementId, signatory.Id, It.IsAny<CancellationToken>())).ReturnsAsync(signatory);
+        repository.Setup(service => service.GetByIdAsync(agreementId, It.IsAny<CancellationToken>())).ReturnsAsync(agreement);
+
+        var handler = new SubmitRegisteredSignatureCommandHandler(repository.Object);
+
+        var response = await handler.Handle(new SubmitRegisteredSignatureCommand(agreementId, signatory.Id, userId, "sig-value", "127.0.0.1"), CancellationToken.None);
+
+        Assert.IsNotNull(response);
+        Assert.AreEqual(signatory.Email, response.Email);
+        Assert.AreEqual("sig-value", signatory.SignatureValue);
+        Assert.AreEqual(agreement.CurrentVersionId, signatory.VersionSignedId);
+        Assert.IsNotNull(signatory.SignedAt);
         repository.Verify(service => service.UpdateSignatoryAsync(signatory, It.IsAny<CancellationToken>()), Times.Once);
     }
 

@@ -2,6 +2,7 @@ using Accordly.Api.Services;
 using Accordly.Application.Agreements.Commands.DeleteSignatory;
 using Accordly.Application.Agreements.Commands.InviteSignatory;
 using Accordly.Application.Agreements.Commands.SubmitGuestSignature;
+using Accordly.Application.Agreements.Commands.SubmitRegisteredSignature;
 using Accordly.Application.Agreements.Queries.ListSignatories;
 using Accordly.Application.Agreements.Queries.ResolveGuestSignatory;
 using Accordly.Contracts.Signatories;
@@ -35,8 +36,8 @@ public sealed class SignatoriesModule : ICarterModule
         });
         group.MapPost("/{sigId:guid}/sign", async (Guid id, Guid sigId, HttpContext context, SubmitSignatureRequest request, ICurrentUserService currentUser, ISender sender, CancellationToken cancellationToken) =>
         {
-            // This remains a thin delegation endpoint; the signatory-specific enforcement is handled in the application layer when the workflow is expanded.
-            return Results.Ok();
+            var result = await sender.Send(new SubmitRegisteredSignatureCommand(id, sigId, currentUser.GetRequiredUserId(context.User), request.SignatureValue, context.Connection.RemoteIpAddress?.ToString()), cancellationToken);
+            return result is null ? Results.NotFound() : Results.Ok(result);
         });
 
         app.MapGet("/api/v1/sign/{token}", async (string token, ISender sender, CancellationToken cancellationToken) =>
