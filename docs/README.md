@@ -8,12 +8,12 @@ Accordly is a self-hostable platform for drafting, versioning, signing, attachin
 - [API reference](api.md)
 - [Data model](data-model.md)
 - [Local development](development.md)
-- [Scaffold status and roadmap](scaffold-status.md)
+- [Implementation status and task checklist](../SCAFFOLD.md)
 
 ## Source of Truth
 
 - `README.md` describes the product vision, feature set, and long-term roadmap.
-- `SCAFFOLD.md` is the implementation checklist.
+- `SCAFFOLD.md` is the single source of truth for implementation status, validation notes, and the detailed task checklist.
 - This directory explains how the projects fit together and how to work with them.
 
 The current implementation targets .NET 10, SQL Server 2022, MSTest, Vue 3, TypeScript, Pinia, Vue Router, Tailwind CSS, Tiptap, MinIO, MailHog, and Docker Compose.

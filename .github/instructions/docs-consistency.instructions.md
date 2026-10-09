@@ -15,12 +15,12 @@ Each durable fact should have one authoritative owner. Do not copy the same beha
 | Domain entities, enums, DTO concepts, persistence fields, and relationships | `docs/data-model.md` |
 | System design, project boundaries, service layering, storage, Identity, and SignalR | `docs/architecture.md` |
 | Local setup, Docker services, configuration keys, migrations, build/run/test commands | `docs/development.md` and `.github/copilot-instructions.md` for agent workflow |
-| Implemented versus planned work and validation state | `docs/scaffold-status.md` and `SCAFFOLD.md` |
+| Implemented versus planned work, validation state, and implementation checklist | `SCAFFOLD.md` |
 | Documentation navigation and links | `docs/README.md` |
 | Product vision, feature intent, and long-term roadmap | `README.md` |
 | How Copilot should work in this repository | `.github/copilot-instructions.md` |
 
-`README.md` is the product-facing overview. `SCAFFOLD.md` is the detailed implementation checklist. The topic documents under `docs/` explain the current system. `.github/copilot-instructions.md` explains agent behavior and validation; it should link to documentation instead of becoming a second API, architecture, or data-model reference.
+`README.md` is the product-facing overview. `SCAFFOLD.md` is the single source of truth for implementation status, validation state, and the detailed implementation checklist. The topic documents under `docs/` explain the current system. `.github/copilot-instructions.md` explains agent behavior and validation; it should link to documentation instead of becoming a second API, architecture, or data-model reference.
 
 When documentation conflicts with implementation, inspect the code and tests first. Then update the authoritative document and any concise navigation or status references in the same change. Do not silently preserve a known contradiction.
 
@@ -32,7 +32,7 @@ Update the owning document in the same change as the implementation change:
 - Changed a Domain entity, enum, domain event, Contract record, EF mapping, Identity persistence shape, or frontend API-facing type -> update `docs/data-model.md`.
 - Changed project dependencies, service boundaries, authentication flow, claim resolution, storage, email, Hangfire, SignalR wiring, or export architecture -> update `docs/architecture.md`.
 - Changed connection strings, environment variables, Docker services, migration commands, prerequisites, build commands, or test commands -> update `docs/development.md` and the relevant operational section of `.github/copilot-instructions.md`.
-- Added or completed a scaffold task, changed validation evidence, or discovered a blocker -> update both `SCAFFOLD.md` and `docs/scaffold-status.md`.
+- Added or completed a scaffold task, changed validation evidence, or discovered a blocker -> update `SCAFFOLD.md`.
 - Added or renamed a document -> update `docs/README.md` and the documentation navigation in `.github/copilot-instructions.md`.
 - Changed product scope or roadmap direction -> update `README.md`; do not present planned work as shipped in `docs/`.
 
@@ -60,7 +60,7 @@ Before completing a code change that affects a documented behavior:
 2. Compare the implementation and tests with that document.
 3. Update the owner in the same change.
 4. Update `docs/README.md` only if navigation changed.
-5. Update `SCAFFOLD.md` and `docs/scaffold-status.md` if implementation status changed.
+5. Update `SCAFFOLD.md` if implementation status or validation evidence changed.
 6. Run the narrowest relevant validation command and report blockers separately from test failures.
 
 For a documentation-only change, check links, filenames, route names, project paths, configuration keys, and status wording against the repository before finalizing.

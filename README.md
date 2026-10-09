@@ -429,7 +429,7 @@ Project documentation is organized under [`docs/`](docs/README.md):
 - [API reference](docs/api.md)
 - [Data model](docs/data-model.md)
 - [Local development](docs/development.md)
-- [Scaffold status and roadmap](docs/scaffold-status.md)
+- [Implementation status and task checklist](SCAFFOLD.md)
 
 ### Running Tests
 
