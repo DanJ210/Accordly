@@ -162,18 +162,4 @@ Before claiming completion, verify the relevant command actually ran. If the loc
 
 ## Current Scaffold Status
 
-The current working tree has a buildable initial slice: the .NET projects and references, domain entities/enums, Contracts records, Application interfaces and agreement handlers, EF/SQL Server infrastructure, API composition root and initial Carter routes, Docker Compose services, and the Vue frontend shell/stores/composables/layouts/basic feature components.
-
-The following areas remain unfinished and must stay visible in `SCAFFOLD.md` until implemented and validated:
-
-- Domain event records
-- MediatR validation pipeline behavior
-- Initial EF Core migration
-- Complete route-module separation and correct claim-based identity propagation
-- Docker-backed auth integration validation for the register/login/refresh/logout lifecycle
-- Unit, integration, E2E, and frontend tests
-- Full editor route/page and version-save workflow
-- Complete agreement detail composition, SignalR UI updates, pagination, and create modal
-- Accurate README references to SQL Server and MSTest where older text still says PostgreSQL or xUnit
-
-When completing one of these areas, update both the implementation and the corresponding checklist entry rather than silently treating a stub as complete.
+See [SCAFFOLD.md](../SCAFFOLD.md) for the authoritative implementation status, validation evidence, and checklist.

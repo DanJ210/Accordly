@@ -9,7 +9,26 @@ Check off each item only after it is implemented and validated. Commits are not 
 > **Frontend:** Vue 3 · TypeScript · Pinia · Vue Router 4 · Tailwind CSS v4 · Tiptap v2
 > **Infra:** Docker Compose · MinIO · MailHog
 
-> **Progress note (2026-09-22):** Checked items below are implemented and validated; commit state does not determine completion. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, the Docker-backed auth lifecycle integration test, and the frontend type check/production build pass. Unchecked items are still missing or only partially implemented.
+> **Progress note (2026-09-22):** Checked items below are implemented and validated; commit state does not determine completion. The solution uses the .NET 10 CLI's generated `Accordly.slnx` format. Unchecked items are still missing or only partially implemented.
+
+## Current Status
+
+The implemented backend covers authentication and refresh-token rotation, authenticated agreement creation/list/detail/update/deletion with authorization, immutable version creation and reads/diffs, and signatory management including registered and guest signing. The frontend has its Vue/Vite shell, router and auth guard, stores, API/SignalR composables, layouts, and initial feature components.
+
+The primary remaining work is end-to-end completion: agreement integration tests (7.4a–7.4d); E2E project and Playwright infrastructure (7.5a–7.5b); attachment storage and download (6.13a–6.13c); structured/PDF exports and server signing (6.14a–6.14c); append-only audit querying and authorized SignalR publication (6.15a–6.15c); the agreement editor route (9.3b); and the unfinished agreement, editor, guest-signing, and auth pages and frontend tests (Phases 10–12). Signature-driven activation is partial: activation for a fully signed current version exists, while its audit, SignalR, and notification work remains outstanding (6.12d).
+
+The attachment, audit, and export API modules are route shells only; their existence does not mean those behaviors are implemented. The agreement authorization policy is implemented and covered by focused tests (6.9b).
+
+### Previously Recorded Validation
+
+The following results were recorded on 2026-09-22 and have not been rerun as part of this status update:
+
+- `dotnet build Accordly.slnx`, the `Accordly.Unit` test project, the Docker-backed authentication lifecycle integration test, and the frontend type check and production build passed.
+- The authentication integration test covered registration, duplicate registration, invalid login, shared Identity/domain user IDs, hashed refresh-token persistence, token rotation and replay rejection, and idempotent logout/revocation.
+- Agreement list/detail query behavior has focused unit coverage, and the API project built after a route correction.
+- NuGet vulnerability advisories were reported as warnings; the recorded build was not warning-free.
+
+Keep these results as dated evidence, not as a claim of current validation. Update this section when validation is rerun.
 
 ---
 
